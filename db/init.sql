@@ -55,15 +55,14 @@ SELECT chat_user.id, chat_id, username, is_authenticated, is_typing FROM chat_us
 INNER JOIN account ON chat_user.account_id = account.id;
 
 --
--- Child, knows about parent
 -- Note IMPORTANT if a message is not to anyone, then put TO SELF. This is a 
--- workaround/hack to work with inner join. W// to self, any message 
--- w//to_chat_user_id would be excluded. A Left Outer Join would work but 
--- include all messages..
+-- workaround/hack to work with the Inner Join. Without to self, any message 
+-- without to_chat_user_id would be excluded. A Left Outer Join would work but 
+-- include messages from all Chats (break everything).
 --
 CREATE TABLE chat_message (
     id uuid PRIMARY KEY default uuid_generate_v4(),
-    message_id SERIAL,  -- note separate message_id for Client to have ordered message sequence
+    message_id SERIAL,  -- Note separate message_id for Client to have ordered message sequence
     chat_id uuid,
     timestamp timestamp DEFAULT now(), 
     from_chat_user_id uuid NOT NULL,
