@@ -1,14 +1,13 @@
 --
 -- Creates inital POSTGRESQL ChatApp-Web tables to store messages etc.
 --
--- Tests:
--- copy paste from `test.sql` in console, success if SQL results
+-- Tests: in `test.sql`
 --
 
 --
 -- For UUID ids
 -- UUIDs add security since difficult to guess and gaurantee uniqueness. If the
--- data is not mutable, then a semantic key, like a column with names is fine to.
+-- data is not mutable, then a semantic key, like a column with names is fine to
 -- NOTE: UUIDs are 128bit HEX digits, not strings
 --
 CREATE EXTENSION "uuid-ossp";
@@ -28,7 +27,8 @@ CREATE TABLE account (
 );
 
 --
--- Parent, no knowledge of children (chat_message & chat_user)
+-- Note at least one chat should always exist. System should auto a create 
+-- default chat.
 --
 CREATE TABLE chat (
     id uuid PRIMARY KEY default uuid_generate_v4(),
@@ -36,10 +36,10 @@ CREATE TABLE chat (
 );
 
 --
--- Child, knows about parent Chat & IS-A type of Account
+-- Why? id & account_id? alows chat_user to exist in mulitple chats
 --
 CREATE TABLE chat_user (
-    id uuid PRIMARY KEY default uuid_generate_v4(), -- Why? id & account_id? alows chat_user to exist in mulitple chats
+    id uuid PRIMARY KEY default uuid_generate_v4(), 
     account_id uuid,
     chat_id uuid NOT NULL,
     is_typing BOOLEAN DEFAULT FALSE,
@@ -48,11 +48,18 @@ CREATE TABLE chat_user (
 );
 
 --
+-- Roster: Create View for API convenience
+--
+CREATE OR REPLACE VIEW roster AS 
+SELECT chat_user.id, chat_id, username, is_authenticated, is_typing FROM chat_user 
+INNER JOIN account ON chat_user.account_id = account.id;
+
+--
 -- Child, knows about parent
--- note 1-TO-1 rel w/ chat_user
--- note IMPORTANT if a message is not to anyone, then put TO SELF. This is a workaround/hack 
--- to work with inner join. W// to self, any message w//to_chat_user_id would be
--- excluded. A Left Outer Join would work but include all messages..
+-- Note IMPORTANT if a message is not to anyone, then put TO SELF. This is a 
+-- workaround/hack to work with inner join. W// to self, any message 
+-- w//to_chat_user_id would be excluded. A Left Outer Join would work but 
+-- include all messages..
 --
 CREATE TABLE chat_message (
     id uuid PRIMARY KEY default uuid_generate_v4(),
@@ -67,13 +74,6 @@ CREATE TABLE chat_message (
     CONSTRAINT fk_from_chat_user_id FOREIGN KEY(from_chat_user_id) REFERENCES chat_user(id),
     CONSTRAINT fk_to_chat_user_id FOREIGN KEY(to_chat_user_id) REFERENCES chat_user(id)
 );
-
---
--- Roster: Create View for API convenience
---
-CREATE OR REPLACE VIEW roster AS 
-SELECT chat_user.id, chat_id, username, is_authenticated, is_typing FROM chat_user 
-INNER JOIN account ON chat_user.account_id = account.id;
 
 --
 -- Transcript: Create View for API convenience

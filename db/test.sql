@@ -2,8 +2,13 @@
 -- TESTS
 --
 -- Basic tests to make sure the table structure works as intended. This is done
--- by an example set of inserts with a select that should return data. If yes,
--- all good, if not, this failed.
+-- by an example set of inserts with a select that should return data. Success 
+-- if the bottom Selects return the exptect.
+--
+-- Why no test lib?
+-- From what I could find, it looks like most SQL test libs use SQL functions to
+-- assert values. This seems clunky to me and to have no added value vs. an API 
+-- testing the results. E.g. test lib: https://github.com/adrianandrei-ca/pgunit
 --
 
 --
@@ -48,10 +53,11 @@ INSERT INTO chat_message (chat_id, from_chat_user_id, to_chat_user_id, content) 
 --
 
 -- Roster & Transcript from Chat1
+-- Success if returns 3 rows
 SELECT * FROM roster WHERE chat_id = 'f729dd6c-a130-4725-9d98-10137727a821';
-SELECT * FROM transcript WHERE chat_id = 'f729dd6c-a130-4725-9d98-10137727a821'; -- returns 3 rows
+SELECT * FROM transcript WHERE chat_id = 'f729dd6c-a130-4725-9d98-10137727a821';
 
 -- Roster & Transcript from Chat2
+-- Success if returns 4 rows
 SELECT * FROM roster WHERE chat_id = 'b863b0ba-44ff-49d4-a3a8-d62b59cb90fd';
-SELECT * FROM transcript WHERE chat_id = 'b863b0ba-44ff-49d4-a3a8-d62b59cb90fd'; -- returns 4 rows
-
+SELECT * FROM transcript WHERE chat_id = 'b863b0ba-44ff-49d4-a3a8-d62b59cb90fd';
