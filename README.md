@@ -42,6 +42,7 @@ exit
 ## Developer Notes
 
 DB
+- table IDs: all are generated UUIDs (uuid-ossp) that are 128bit HEX digits, not strings
 - `chat_message` table: **important** message to self? use creator chat_user id for both from_chat_user_id and to_chat_user_id. This is a workaround/hack to work with Inner Join. W// to self, any message without to_chat_user_id would be excluded. A Left Outer Join would work but include messages from all chats. (more info see db/init.sql) *TODO probably a better way to do this*
 - `chat_message` table: message_id intented for use with Client Transcript to have ordered message sequence (more convenient vs using id or timestamp)
 - `chat_user` table: Why both an `id` and `account_id`? `id` alows a Chat User to have custom props per Chat. `account_id` just shares info like `username`, so Account has a 1 to many rel with Chat User and a Chat has a 1 to many rel  with Chat User.
