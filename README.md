@@ -6,6 +6,11 @@
 
 Tech Stack:
 - DB: PosgreSQL
+- Server: NodeJS ExpressJS
+
+### Notes
+
+- Server:generated with `npx express-generator --no-view`
 
 
 ## Setup
@@ -39,6 +44,17 @@ psql -U $POSTGRES_USER $POSTGRES_DB_TEST
 exit
 ```
 
+SERVER: Nodejs
+```
+# Build
+n/a - convince me of the value of an Express prod build?
+
+# Debug
+cd server
+npm run debug
+
+```
+
 ## Developer Notes
 
 DB
@@ -46,3 +62,7 @@ DB
 - `chat_message` table: **important** message to self? use creator chat_user id for both from_chat_user_id and to_chat_user_id. This is a workaround/hack to work with Inner Join. W// to self, any message without to_chat_user_id would be excluded. A Left Outer Join would work but include messages from all chats. (more info see db/init.sql) *TODO probably a better way to do this*
 - `chat_message` table: message_id intented for use with Client Transcript to have ordered message sequence (more convenient vs using id or timestamp)
 - `chat_user` table: Why both an `id` and `account_id`? `id` alows a Chat User to have custom props per Chat. `account_id` just shares info like `username`, so Account has a 1 to many rel with Chat User and a Chat has a 1 to many rel  with Chat User.
+
+Server
+- ENV vars in package.json? Be careful of trailing spaces in set MY_VAR=*
+- debug mode? prepend to npm command `set DEBUG=express:* & <MY_COMMAND>`
