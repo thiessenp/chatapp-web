@@ -1,0 +1,55 @@
+version: "3"
+services:
+    db:
+        build: 
+            context: ./db
+            dockerfile: Dockerfile
+        container_name: db
+        env_file:
+            - ./db/.env
+        # Q: Why Expose Port when using a Network exposes all ports on that network?
+        # A: Dev tools like VSCode PostreSQL can then access via Port, so conveniences.
+        # IMPORTANT: DO NOT expose this in prod, at least not to the front-end
+        # network, should only be accessible by network API on.
+        ports:
+            - 5432:5432
+        restart: unless-stopped
+        volumes:
+            # TODO: volume for persistent storage
+            # - ./postgres-data:/var/lib/postgresql/data/
+            - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - backend
+    server:
+        container_name: server
+        build: 
+            context: ./server
+            dockerfile: Dockerfile.dev
+        ports:
+            - "3000:3000"   # HOST_PORT:CONTAINER_PORT 
+            - "9229:9229"   # Default VSCode debugger port
+        depends_on: 
+            - db
+        # PRODUCTION:
+        # Not important for dev, but on any un-caught exceptions etc. important
+        # to restart to avoid down time.
+        # Note: Process Manager will also be doing this. Work well together?
+        restart: on-failure
+        volumes:
+            - /app/node_modules     # Inside the container, don't try to override this folder, just leave as is
+            - ./server:/app         # Look at the server directory and copy everything into the app folder in the container
+        # Overrides Command in Docker files, and runs below in the Container.
+        # Mapped volume is watched by nodemen, so updates on files changes. 
+        # Debugger possible in VSCode with the inspect and attach on above port.
+        # Note: for `nodemon --inspect=0.0.0.0 ./bin/www` the `=0.0.0.0` is important! :)
+        command: npm run debug  # above done in NPM command
+        networks:
+            - backend
+
+# Any Volumes to *persist* go here
+# volumes:
+#     postgres-data:
+
+# Services by default join network myapp_default as their hostname, override with a network
+networks:
+    backend:

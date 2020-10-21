@@ -1,0 +1,24 @@
+FROM node:12-alpine AS alpine
+
+# Order matters, leave here
+RUN npm install -g nodemon
+# RUN npm config set registry https://registry.npmjs.org    # Needed? 
+
+RUN mkdir -p /app
+WORKDIR /app
+
+# For serving static files
+# RUN mkdir -p public
+
+# Dependencies
+# Includes package-lock.json  to ensure same versions
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm install \
+ && npm ls \
+ && npm cache clean --force \
+ && mv /app/node_modules /node_modules
+
+# Default command to run on Container startup
+CMD ["npm", "run", "debug"]
