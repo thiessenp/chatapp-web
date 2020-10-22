@@ -92,3 +92,9 @@ INNER JOIN account account_to ON chat_user_to.account_id = account_to.id;
 -- SQL starts row indexing at 1, this starts at 0 to match Array indexes starting at 0
 --
 CREATE SEQUENCE message_id_sequence INCREMENT 1 START 0 MINVALUE 0 OWNED BY chat_message.message_id;
+
+
+---
+--- Create a default initial chat room as a starting point for user to connect to.
+---
+INSERT INTO chat (id, name) VALUES ('default');

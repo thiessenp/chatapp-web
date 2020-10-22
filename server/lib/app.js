@@ -19,12 +19,15 @@ app.use(cookieParser());
 
 // API routes
 const indexRouter = require('./routes/index');
-const testRouter = require('./routes/test');
+const healthCheckRouter = require('./routes/healthCheck');
 const API_PATH = '/api';
 app.use(API_PATH + '/', indexRouter);
-app.use(API_PATH + '/test', testRouter);
+app.use(API_PATH + '/healthCheck', healthCheckRouter);
 
-log('Client started on PORT=', config.PORT);
+// TODO
+// test -> healthcheck to verify DB etc
+
+log(`Client started on PORT=${config.PORT}`);
 
 module.exports = app;
 

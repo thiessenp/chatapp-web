@@ -23,9 +23,16 @@ Config for VSCode debugger in `.vscode/launch.json`.
 See https://code.visualstudio.com/docs/editor/debugging
 
 ```
-docker-compose build --no-cache # Important to run after e.g. new node_module, or just get cached (no new node_module)
-docker-compose up               # Adding `--build --force-recreate` will used cached.. why above build
-docker-compose down             # Run when done, cleans up networks etc.
+# Docker installed & running? No see: TODO
+
+# Important to run after e.g. new node_module, or get cached (no new node_module)
+docker-compose build --no-cache
+
+# Adding `--build --force-recreate` will used cached.. why above build
+docker-compose up
+
+# Run when done, cleans up networks etc.
+docker-compose down
 ```
 
 ### Debug
