@@ -16,8 +16,8 @@ router.get('/', async function(req, res, next) {
     return res.status(500).send({ 'error': result.error });
   }
 
-  // Status is the important part. May want data in the future so leaving in
-  res.json({ status: 'UP', data: result.data.rows });
+  // Status is the important part
+  res.json({ status: 'UP' /*, data: result.data.rows*/ });
 });
 
 module.exports = router;

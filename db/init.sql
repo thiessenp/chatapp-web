@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS account;
 CREATE TABLE account (
     id uuid PRIMARY KEY default uuid_generate_v4(),
     username VARCHAR (50) NOT NULL,
+    password VARCHAR (50) NOT NULL,
     is_authenticated BOOLEAN DEFAULT FALSE
 );
 
@@ -97,4 +98,4 @@ CREATE SEQUENCE message_id_sequence INCREMENT 1 START 0 MINVALUE 0 OWNED BY chat
 ---
 --- Create a default initial chat room as a starting point for user to connect to.
 ---
-INSERT INTO chat (id, name) VALUES ('default');
+INSERT INTO chat (name) VALUES ('default');

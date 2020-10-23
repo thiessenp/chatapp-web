@@ -17,9 +17,9 @@
 --
 
 -- Accounts x3
-INSERT INTO account (id, username) VALUES ('a2d45b9b-e6ee-4b2c-ac0a-ef2434890ad5', 'username1');
-INSERT INTO account (id, username) VALUES ('b2955cf4-a082-46df-9257-f890ed4a0f7e', 'username2');
-INSERT INTO account (id, username) VALUES ('38b06faf-2289-4f7a-ad17-650056443ba6', 'username3');
+INSERT INTO account (id, username, password) VALUES ('a2d45b9b-e6ee-4b2c-ac0a-ef2434890ad5', 'username1', 'password');
+INSERT INTO account (id, username, password) VALUES ('b2955cf4-a082-46df-9257-f890ed4a0f7e', 'username2', 'password');
+INSERT INTO account (id, username, password) VALUES ('38b06faf-2289-4f7a-ad17-650056443ba6', 'username3', 'password');
 
 -- Chat1 Data
 INSERT INTO chat (id, name) VALUES ('f729dd6c-a130-4725-9d98-10137727a821', 'chat1');

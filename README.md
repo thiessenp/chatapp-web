@@ -23,7 +23,7 @@ Config for VSCode debugger in `.vscode/launch.json`.
 See https://code.visualstudio.com/docs/editor/debugging
 
 ```
-# Docker installed & running? No see: TODO
+# Docker installed & running? No? See: TODO
 
 # Important to run after e.g. new node_module, or get cached (no new node_module)
 docker-compose build --no-cache
@@ -37,7 +37,7 @@ docker-compose down
 
 ### Debug
 
-Somtimes it helps to build, run and inspect containers individually.
+Somtimes it helps to build, run and inspect containers individually. Docker run crashes? Run without -d, so `docker run --rm -it ...`
 
 ```
 # DB
@@ -45,14 +45,14 @@ cd db
 docker build . -t db --no-cache
 docker run --rm -itd --env-file .env -p 5432:5432 --network=backend --name=db db
 docker container exec -it db sh
-psql -U $POSTGRES_USER $POSTGRES_DB             # e.g. `\dt` to verify create some tables
+psql -U $POSTGRES_USER $POSTGRES_DB      # e.g. `\dt` to verify create some tables
 
 # DB manual tests
 docker container exec -it db sh
-createdb -U $POSTGRES_USER $POSTGRES_DB_TEST    # ignore error about db existing, if any
+createdb -U $POSTGRES_USER $POSTGRES_DB_TEST # ignore error about db existing,if any
 psql -U $POSTGRES_USER $POSTGRES_DB_TEST
 \i /docker-entrypoint-initdb.d/init.sql
-\i /test.sql                                    # should list some rows, if so, success
+\i /test.sql    # should list some rows, if so, success
 
 # SERVER
 cd server
@@ -80,3 +80,21 @@ Server
 - ExpressJS app generated with `npm init & npx express-generator --no-view`
 - ENV vars in package.json? Be careful of trailing spaces in set MY_VAR=*
 - debug mode? prepend to npm command `set DEBUG=express:* & <MY_COMMAND>`
+
+
+
+
+
+>>>>>>>>>>>>>>>>>>>>
+
+//middleware, to give Express the ability to read JSON payloads from the HTTP request body
+
+body parser
+
+/api/login
+
+login
+// validated the password and created a JWT session token
+
+
+Express Authentication middleware and only apply it to certain routes.
