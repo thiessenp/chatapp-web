@@ -21,8 +21,10 @@ const app = express();
 app.use(cors({origin: config.FRONTEND_HOST}));
 app.use(logger('dev'));
 app.use(express.json());
-// url-encoded for multipart form data 
-app.use(bodyParser.urlencoded({extended: false}));
+// Use instead of bodyParser that only handles JSON and UrlEncoded not MultiPart
+// Us `x-www-form-encoded`  (-vs- fail `form-data`)
+// Body-parser deprecated(?) as of Express v4.16
+app.use(bodyParser.urlencoded({extended: true}));   // True for bet. JSON UX
 app.use(cookieParser());
 
 // Static files? then enable at that time and create a public dir for it
@@ -32,9 +34,11 @@ app.use(cookieParser());
 // TODO add API version to requests 1.0.0
 const indexRouter = require('./routes/index');
 const healthCheckRouter = require('./routes/healthCheck');
+const loginRouter = require('./routes/login');
 const API_PATH = '/api';
 app.use(API_PATH + '/', indexRouter);
 app.use(API_PATH + '/healthCheck', healthCheckRouter);
+app.use(API_PATH + '/login', loginRouter);
 
 
 // Default Not found 404 error

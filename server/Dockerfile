@@ -13,4 +13,6 @@ RUN npm install --production \
 
 COPY . /app
 
+COPY $RSA_PRIVATE_KEY_FILE .
+
 CMD ["npm", "run", "start"]

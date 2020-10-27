@@ -60,7 +60,9 @@ function healthCheck() {
 }
 
 // Log a User in. Currently only need a username
-function authAccount(username /*,password*/) {}
+function getAccountByUsername(username ,password) {
+  return pool.query(`SELECT * FROM account WHERE username=${username}`);
+}
 
 // Account inc. is_authenticated
 function getAccount(accountId) {}
@@ -78,5 +80,6 @@ function getRoster(chatId) {}
 function getTrascript(chatId) {}
 
 module.exports = {
-  healthCheck
+  healthCheck,
+  getAccountByUsername
 };

@@ -99,3 +99,9 @@ CREATE SEQUENCE message_id_sequence INCREMENT 1 START 0 MINVALUE 0 OWNED BY chat
 --- Create a default initial chat room as a starting point for user to connect to.
 ---
 INSERT INTO chat (name) VALUES ('default');
+
+---
+--- Create a default initial admin to do admin things.
+---
+INSERT INTO account (username, password) VALUES ('admin', 'changeme');
+

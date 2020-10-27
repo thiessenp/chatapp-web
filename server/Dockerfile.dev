@@ -20,5 +20,8 @@ RUN npm install \
  && npm cache clean --force \
  && mv /app/node_modules /node_modules
 
+# Used by JWT for auth
+COPY $RSA_PRIVATE_KEY_FILE .
+
 # Default command to run on Container startup
 CMD ["npm", "run", "debug"]
