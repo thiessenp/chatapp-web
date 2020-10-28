@@ -1,7 +1,6 @@
 const express = require('express');
 const router = new express.Router();
 const accountResource = require('../resources/account');
-const log = require('../utils/log');
 
 
 router.get('/', async function(req, res, next) {
@@ -21,24 +20,11 @@ router.get('/', async function(req, res, next) {
         return res.sendStatus(401);
     }
 
-
-    // log('RSA_PRIVATE_KEY', RSA_PRIVATE_KEY);
-
-
-    /**
-     * 
-     * 
-     * PICK UP:
-     * Sending The JWT to the server on each request
-     * https://blog.angular-university.io/angular-jwt-authentication/
-     * 
-     * 
-     */
     // JSON BODY:
     // Vulnerable to script injection
     res.status(200).json({
         idToken: authenticateData.idToken,
-        expiresIn: 120  // Not sure
+        expiresIn: authenticateData.expiresIn  // Not sure
     });
 
 

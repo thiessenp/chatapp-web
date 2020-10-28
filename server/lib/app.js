@@ -5,14 +5,14 @@ const bodyParser = require('body-parser');
 // TODO what todo with this?
 // For: automated logging of requests, responses and related data
 const logger = require('morgan');
+// TODO:
 const cors = require('cors');
 
 // For: dev debug logging
 const log = require('./utils/log');
 const config = require('./config');
-
-
 const app = express();
+
 
 // (TODO) Done in Nginx. 
 // See http://nginx.org/en/docs/http/ngx_http_gzip_module.html
@@ -40,6 +40,13 @@ app.use(API_PATH + '/', indexRouter);
 app.use(API_PATH + '/healthCheck', healthCheckRouter);
 app.use(API_PATH + '/login', loginRouter);
 
+
+// Default Unauthorized 401 error
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).send('invalid token...');
+    }
+});
 
 // Default Not found 404 error
 app.use(function(req, res, next) {

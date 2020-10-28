@@ -4,11 +4,12 @@
 
 const express = require('express');
 const router = new express.Router();
-// const log = require('../utils/log');
 const healthCheckResource = require('../resources/healthCheck');
+const accountResource = require('../resources/account');
 
 
-router.get('/', async function(req, res, next) {
+// TODO: Just an auth test, leave route open (not Authenticated)
+router.get('/', accountResource.isAuthenticated, async function(req, res, next) {
   const result = await healthCheckResource.getHealthCheck();
 
   // Unsure? Does an error status help here? If not, remove.
