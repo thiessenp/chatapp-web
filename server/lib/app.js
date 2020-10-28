@@ -14,7 +14,7 @@ const config = require('./config');
 const app = express();
 
 
-// (TODO) Done in Nginx. 
+// (TODO) Done in Nginx.
 // See http://nginx.org/en/docs/http/ngx_http_gzip_module.html
 // app.use(compression());
 
@@ -24,7 +24,7 @@ app.use(express.json());
 // Use instead of bodyParser that only handles JSON and UrlEncoded not MultiPart
 // Us `x-www-form-encoded`  (-vs- fail `form-data`)
 // Body-parser deprecated(?) as of Express v4.16
-app.use(bodyParser.urlencoded({extended: true}));   // True for bet. JSON UX
+app.use(bodyParser.urlencoded({extended: true})); // True for bet. JSON UX
 app.use(cookieParser());
 
 // Static files? then enable at that time and create a public dir for it
@@ -42,30 +42,30 @@ app.use(API_PATH + '/login', loginRouter);
 
 
 // Default Unauthorized 401 error
-app.use(function (err, req, res, next) {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).send('invalid token...');
-    }
+app.use(function(err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('invalid token...');
+  }
 });
 
 // Default Not found 404 error
 app.use(function(req, res, next) {
-    res.status(404).json({ message: 'Not Found' });
+  res.status(404).json({message: 'Not Found'});
 });
 
 // Default Server 500 error. Catchall at end of the middleware function stack.
 // Express default handler also rems stack in prod but eh I like control.
 app.use(function(err, req, res, next) {
-    // Includes stack trace - potential sensitive
-    if (config.NODE_ENV === 'development') {
-        res.status(500).json({
-            message: err.message,
-            error: err,
-            stack: err.stack
-        });
-    } else {
-        res.status(500).json({ message: 'AHHHhhh someTHING broke!' });
-    }
+  // Includes stack trace - potential sensitive
+  if (config.NODE_ENV === 'development') {
+    res.status(500).json({
+      message: err.message,
+      error: err,
+      stack: err.stack,
+    });
+  } else {
+    res.status(500).json({message: 'AHHHhhh someTHING broke!'});
+  }
 });
 
 

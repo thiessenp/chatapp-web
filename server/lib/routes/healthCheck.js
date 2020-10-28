@@ -14,11 +14,11 @@ router.get('/', accountResource.isAuthenticated, async function(req, res, next) 
 
   // Unsure? Does an error status help here? If not, remove.
   if (result.error) {
-    return res.status(500).send({ 'error': result.error });
+    return res.status(500).send({'error': result.error});
   }
 
   // Status is the important part
-  res.json({ status: 'UP' /*, data: result.data.rows*/ });
+  res.json({status: 'UP' /* , data: result.data.rows*/});
 });
 
 module.exports = router;
