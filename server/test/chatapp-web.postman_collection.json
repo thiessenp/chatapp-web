@@ -1,0 +1,65 @@
+{
+	"info": {
+		"_postman_id": "d5c29459-199c-4f26-8c31-ae27526ac49d",
+		"name": "chatapp-web",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:3000/api/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b781c2a3-d38c-45a1-b458-1384d9ede113",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// PARAMS\r",
+							"//responseBody.has(\"\")\r",
+							"//JSON.parse(responseBody); jsonData.data[1].id === X\r",
+							"\r",
+							"// GLOBAL VARS\r",
+							"// {{}}\r",
+							"\r",
+							"// ENVIRONMENT VARIABLES (drop down)\r",
+							"//"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c246b36f-c795-4669-b595-20903972af99",
+						"exec": [
+							"// Runs before Request sent\r",
+							"\r",
+							"// postman.setGlobalVariable(\"key\", \"value\")\r",
+							"// postman.setEnvironmentVariable(\"key\", \"val\")\r",
+							"// postman.getGlobalVariable(\"key\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

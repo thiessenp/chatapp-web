@@ -71,6 +71,7 @@ TODO
 Why not test with Server isolated from DB with mocks? Docker-compose arguable removes the need for this (spins up environment etc.)
 
 DB
+- Testing done through Server tests
 - table IDs: all are generated UUIDs (uuid-ossp) that are 128bit HEX digits, not strings
 - `chat_message` table: **important** message to self? use creator chat_user id for both from_chat_user_id and to_chat_user_id. This is a workaround/hack to work with Inner Join. W// to self, any message without to_chat_user_id would be excluded. A Left Outer Join would work but include messages from all chats. (more info see db/init.sql) *TODO probably a better way to do this*
 - `chat_message` table: message_id intented for use with Client Transcript to have ordered message sequence (more convenient vs using id or timestamp)
@@ -80,6 +81,12 @@ Server
 - ExpressJS app generated with `npm init & npx express-generator --no-view`
 - ENV vars in package.json? Be careful of trailing spaces in set MY_VAR=*
 - debug mode? prepend to npm command `set DEBUG=express:* & <MY_COMMAND>`
+
+Server Testing (TODO come back to and research more)
+- Black Box (public stuff), not White Box 2much overhead sync funcs & lost focus
+- Why not Stubs & Spies for Black Box API? below is faster & as effective IMO
+- docker-compose spins up test env with DB test data, seems 
+- Postman drives "unit" tests for API, API tests internals that test DB
 
 
 
