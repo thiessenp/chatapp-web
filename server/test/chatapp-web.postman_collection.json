@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "localhost:3000/api/",
+			"name": "{{HOST}}:{{PORT}}/api/",
 			"event": [
 				{
 					"listen": "test",
@@ -15,15 +15,22 @@
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
 							"\r",
+							"// PRE-TEST \r",
+							"// Note Pre-request Script, will run before the Request\r",
+							"\r",
 							"// PARAMS\r",
 							"//responseBody.has(\"\")\r",
 							"//JSON.parse(responseBody); jsonData.data[1].id === X\r",
 							"\r",
 							"// GLOBAL VARS\r",
-							"// {{}}\r",
+							"// postman.setGlobalVariable(\"idToken\", idToken);\r",
+							"// postman.getGlobalVariable(\"idToken\");\r",
+							"// {{idToken}}\r",
 							"\r",
 							"// ENVIRONMENT VARIABLES (drop down)\r",
-							"//"
+							"// postman.setEnvironmentVariable(\"idToken\", idToken); -- local\r",
+							"// ...\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -55,6 +62,131 @@
 					"path": [
 						"api",
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{HOST}}:{{PORT}}/api/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "66505fc2-cf3e-48c7-92e3-24efc31db633",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// Get and verify Token\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"idToken = jsonData.idToken;\r",
+							"tests[\"idToken not null\"] = idToken !== undefined;\r",
+							"\r",
+							"// Set Global Token for API uses\r",
+							"postman.setGlobalVariable(\"idToken\", idToken);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "username",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "changeme",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/login",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "username1",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "password1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/healthCheck",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c1395c45-1f49-4833-b58d-82a4cd6015eb",
+						"exec": [
+							"// Token set from login in global var, global var used in Authorization part"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/healthCheck",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"healthCheck"
 					]
 				}
 			},

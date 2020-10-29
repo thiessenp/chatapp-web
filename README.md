@@ -60,9 +60,9 @@ docker build . -t server --no-cache
 docker run -itd --rm --env-file .env -p 3000:3000 --network=backend --name=server server
 docker container exec -it server sh     # try pinging hosts db & client
 
-# SERVER unit tests
-TODO
-
+# SERVER tests (lint and "unit" tests)
+cd server
+npm run test
 ```
 
 
