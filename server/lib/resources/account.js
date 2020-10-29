@@ -8,6 +8,7 @@ const expressJwt = require('express-jwt');
 
 const config = require('../config');
 const dbClient = require('../drivers/postgreSQL');
+const Account = require('./models/account');
 const log = require('../utils/log');
 
 /**
@@ -18,7 +19,10 @@ const log = require('../utils/log');
  * @return {Object} token and expires time on success, error on fail
  */
 async function authenticate(username, password) {
-  const result = await dbClient.getAccountByUsername(username, password)
+  const account = new Account({username, password});
+
+  const result = await dbClient
+      .getAccountByUsername(account.username, account.password)
       .then((data) => {
         // Failed authentication cases
         if (data.rows.length <= 0) {
