@@ -237,6 +237,251 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a71e233a-d2db-479d-bb2f-44b1859125b8",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 201;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "New Chat",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chat",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a3b25c5d-f01f-453a-89eb-5213547e6361",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// Get chats, should be at least 2\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"chats = jsonData.data;\r",
+							"tests[\"Two chats created\"] = chats.length === 2;\r",
+							"\r",
+							"// Set Two Chat IDs to use in future tests\r",
+							"postman.setGlobalVariable(\"chat_id1\", chats[0].id);\r",
+							"postman.setGlobalVariable(\"chat_id2\", chats[1].id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chat",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chat/\"1\"",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f99822e6-d036-49f7-a4fd-5fd14374a37a",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chat/{{chat_id1}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chat",
+						"{{chat_id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chat/\"2\"",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b12a7e3a-6371-41fd-9992-93e62a3a44b1",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chat/{{chat_id2}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chat",
+						"{{chat_id2}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

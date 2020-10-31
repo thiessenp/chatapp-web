@@ -28,6 +28,7 @@ See https://code.visualstudio.com/docs/editor/debugging
 # Docker installed & running - No? See: //docs.docker.com/get-started/
 
 # Important to run after e.g. new node_module, or get cached (no new node_module)
+# Can also try docker-compose rm -f
 docker-compose build --no-cache
 
 # Adding `--build --force-recreate` will used cached.. why above build

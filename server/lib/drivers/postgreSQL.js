@@ -68,22 +68,68 @@ function getAccountByUsername(username) {
   return pool.query(`SELECT * FROM account WHERE username=${username}`);
 }
 
-// Account inc. is_authenticated
-// function getAccount(accountId) {}
+/**
+ * Creates a new chat
+ * @param {String} name - Name of chat
+ * @return {Object} result of query
+ */
+function createChat(name) {
+  if (!name) {
+    throw Error('SQL createChat name must be valid');
+  }
+  return pool.query(`INSERT INTO chat (name) VALUES ('${name}')`);
+}
 
-// List of chats
-// function getChats() {}
+/**
+ * Gets all chats
+ * @return {Object} result of query, a list of chats
+ */
+function getChats() {
+  return pool.query(`SELECT * FROM chat`);
+}
 
-// Chat + Roster + Transcript
-// function getChat(chatId) {}
+/**
+ * Gets a chat
+ * @param {UUID} id - id of chat to get
+ * @return {Object} result of query
+ */
+function getChat(id) {
+  if (!id) {
+    throw Error('SQL getChat id must be valid');
+  }
+  return pool.query(`SELECT * FROM chat WHERE id='${id}'`);
+}
 
-// Roster list of users for a Chat
-// function getRoster(chatId) {}
+/**
+ * Gets a chat transcript of messages
+ * @param {UUID} id - id of chat to get
+ * @return {Object} result of query
+ */
+function getTranscript(id) {
+  if (!id) {
+    throw Error('SQL getTranscript id must be valid');
+  }
+  return pool.query(`SELECT * FROM transcript WHERE chat_id='${id}'`);
+}
 
-// Transcript list of messages for a Chat
-// function getTrascript(chatId) {}
+/**
+ * Gets a chat roster of users
+ * @param {UUID} id - id of chat to get
+ * @return {Object} result of query
+ */
+function getRoster(id) {
+  if (!id) {
+    throw Error('SQL getRoster id must be valid');
+  }
+  return pool.query(`SELECT * FROM roster WHERE chat_id='${id}'`);
+}
 
 module.exports = {
   healthCheck,
   getAccountByUsername,
+  createChat,
+  getChats,
+  getChat,
+  getTranscript,
+  getRoster,
 };

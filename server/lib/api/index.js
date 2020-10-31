@@ -15,6 +15,7 @@ const app = express();
 app.use('/api/', require('./root'));
 app.use('/api/healthCheck', require('./healthCheck'));
 app.use('/api/login', require('./login'));
+app.use('/api/chat', require('./chat'));
 
 // Default Unauthorized 401 error
 app.use(function(err, req, res, next) {

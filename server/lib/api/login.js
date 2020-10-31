@@ -1,6 +1,5 @@
 const express = require('express');
 const router = new express.Router();
-// const Account = require('../models/account'); -- TODO
 
 const auth = require('../middleware/auth');
 
@@ -13,14 +12,14 @@ router.get('/', async function(req, res, next) {
     return res.sendStatus(400);
   }
 
-  const authenticateData = await auth.authenticate(
-      username,
-      password,
-  );
+  const authenticateData = await auth.authenticate(username, password);
 
+  // User not authorized
   if (!authenticateData) {
     return res.sendStatus(401);
   }
+
+  // User authorized
 
   // COOKIE:
   // Below prevents XSS, but still vulnerable to CSRF (UI Frmework can protect)
