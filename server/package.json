@@ -20,10 +20,8 @@
     "pg": "^8.4.1"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
     "eslint": "^7.11.0",
     "eslint-config-google": "^0.14.0",
-    "mocha": "^8.2.0",
     "newman": "^5.2.0",
     "nodemon": "^2.0.6"
   },

@@ -68,6 +68,52 @@
 			"response": []
 		},
 		{
+			"name": "{{HOST}}:{{PORT}}/api/404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a0c8e50f-5b58-4409-ba83-5d617ffe522a",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 404;\r",
+							"\r",
+							"// Get and 404 message\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"tests[\"404 message present\"] = jsonData.message !== undefined;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "549f84bd-7754-4837-af65-e3179859e181",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/404",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"404"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "{{HOST}}:{{PORT}}/api/login",
 			"event": [
 				{

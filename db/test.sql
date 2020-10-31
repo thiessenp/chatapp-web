@@ -1,6 +1,9 @@
 --
 -- TESTS
 --
+-- IMPORTANT: FILE DEPRECATED BY DOCKER USE - here for posterity?
+-- (though could use for manual testing?)
+--
 -- Basic tests to make sure the table structure works as intended. This is done
 -- by an example set of inserts with a select that should return data. Success 
 -- if the bottom Selects return the exptect.

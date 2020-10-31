@@ -13,9 +13,11 @@ Tech Stack:
 Copy and *customize* each .env.example file to .env:
 ```
 cp ./db/.env.example ./db/.env
+cp ./server/.env.example ./server/.env
 ```
 
-### Dev
+------------------------------------------------------------------
+### Development
 
 Startup the dev environment with the DB and Server with the below. You can add 
 breakpoints in VSCode that are hit when anything hits the Server's line of code.
@@ -23,7 +25,7 @@ Config for VSCode debugger in `.vscode/launch.json`.
 See https://code.visualstudio.com/docs/editor/debugging
 
 ```
-# Docker installed & running? No? See: TODO
+# Docker installed & running - No? See: //docs.docker.com/get-started/
 
 # Important to run after e.g. new node_module, or get cached (no new node_module)
 docker-compose build --no-cache
@@ -35,7 +37,21 @@ docker-compose up
 docker-compose down
 ```
 
-### Debug
+#### Developer Notes
+
+DB
+- table IDs: all are generated UUIDs (uuid-ossp) that are 128bit HEX digits, not strings
+- `chat_message` table: **important** message to self? use creator chat_user id for both from_chat_user_id and to_chat_user_id. This is a workaround/hack to work with Inner Join. W// to self, any message without to_chat_user_id would be excluded. A Left Outer Join would work but include messages from all chats. (more info see db/init.sql) *TODO probably a better way to do this*
+- `chat_message` table: message_id intented for use with Client Transcript to have ordered message sequence (more convenient vs using id or timestamp)
+- `chat_user` table: Why both an `id` and `account_id`? `id` alows a Chat User to have custom props per Chat. `account_id` just shares info like `username`, so Account has a 1 to many rel with Chat User and a Chat has a 1 to many rel  with Chat User.
+
+Server
+- ExpressJS app generated with `npm init & npx express-generator --no-view`
+- ENV vars in package.json? Be careful of trailing spaces in set MY_VAR=*
+- debug mode? prepend to npm command `set DEBUG=express:* & <MY_COMMAND>`
+- AUTH done with JWT RS256 (TODO: cookies -vs- body, esp when add sockets?)
+
+#### Debug
 
 Somtimes it helps to build, run and inspect containers individually. Docker run crashes? Run without -d, so `docker run --rm -it ...`
 
@@ -47,52 +63,46 @@ docker run --rm -itd --env-file .env -p 5432:5432 --network=backend --name=db db
 docker container exec -it db sh
 psql -U $POSTGRES_USER $POSTGRES_DB      # e.g. `\dt` to verify create some tables
 
-# DB manual tests
+# SERVER
+cd server
+docker build . -t server --no-cache
+docker run -itd --rm --env-file .env -p 3000:3000 --network=backend --name=server server
+docker container exec -it server sh     # try pinging hosts db & client
+```
+
+#### Test
+
+```
+# DB manual tests (only if desperate, use below API tests almost always)
 docker container exec -it db sh
 createdb -U $POSTGRES_USER $POSTGRES_DB_TEST # ignore error about db existing,if any
 psql -U $POSTGRES_USER $POSTGRES_DB_TEST
 \i /docker-entrypoint-initdb.d/init.sql
 \i /test.sql    # should list some rows, if so, success
 
-# SERVER
-cd server
-docker build . -t server --no-cache
-docker run -itd --rm --env-file .env -p 3000:3000 --network=backend --name=server server
-docker container exec -it server sh     # try pinging hosts db & client
-
-# SERVER tests (lint and "unit" tests)
+# SERVER/API tests
 cd server
 npm run test
 ```
 
+#### Test Notes
 
-## Developer Notes
+Docker sure has changed things. After some itterations, here are my thoughts:
 
-Why not test with Server isolated from DB with mocks? Docker-compose arguable removes the need for this (spins up environment etc.)
+For the DB:
+- DB self unit tests? No, since driven by store procedures equiv to API driven
+- SQL data setup? No, easy setup/down clean w/docker so API created more complete
+- Separate Test DB? No, docker again easy setup/down, no worry about cleaning DB
 
-DB
-- Testing done through Server tests
-- table IDs: all are generated UUIDs (uuid-ossp) that are 128bit HEX digits, not strings
-- `chat_message` table: **important** message to self? use creator chat_user id for both from_chat_user_id and to_chat_user_id. This is a workaround/hack to work with Inner Join. W// to self, any message without to_chat_user_id would be excluded. A Left Outer Join would work but include messages from all chats. (more info see db/init.sql) *TODO probably a better way to do this*
-- `chat_message` table: message_id intented for use with Client Transcript to have ordered message sequence (more convenient vs using id or timestamp)
-- `chat_user` table: Why both an `id` and `account_id`? `id` alows a Chat User to have custom props per Chat. `account_id` just shares info like `username`, so Account has a 1 to many rel with Chat User and a Chat has a 1 to many rel  with Chat User.
+For the Server/API:
+- Whitebox/Unit test? No, Blackbox much less overhead sync funcs and lost focus
+- Stubs & Spies &...? No, Docker again, can setup/teardown real test data easy
+- Ok weirdo, what lib then? Postman F-ING ROCKS, real API/HTTP driven tests WOHO!
 
-Server
-- ExpressJS app generated with `npm init & npx express-generator --no-view`
-- ENV vars in package.json? Be careful of trailing spaces in set MY_VAR=*
-- debug mode? prepend to npm command `set DEBUG=express:* & <MY_COMMAND>`
-
-Server Testing (TODO come back to and research more)
-- Black Box (public stuff), not White Box 2much overhead sync funcs & lost focus
-- Why not Stubs & Spies for Black Box API? below is faster & as effective IMO
-- docker-compose spins up test env with DB test data, seems 
-- Postman drives "unit" tests for API, API tests internals that test DB
+------------------------------------------------------------------
 
 
-
-
-
->>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>WIP NOTES
 
 //middleware, to give Express the ability to read JSON payloads from the HTTP request body
 
@@ -105,3 +115,5 @@ login
 
 
 Express Authentication middleware and only apply it to certain routes.
+
+<<<<<<<<<<<<<<END WIP NOTES

@@ -1,15 +1,24 @@
-/**
- * Handles Data gathering for the account and more!
- */
-
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const expressJwt = require('express-jwt');
 
 const config = require('../config');
-const dbClient = require('../drivers/postgreSQL');
-const Account = require('./models/account');
 const log = require('../utils/log');
+const dbClient = require('../drivers/postgreSQL');
+const Account = require('../models/account');
+
+
+// Why algorithm RS265?     (replacing HS256)
+// Only deploy private key to auth server, and not across all servers
+// Allows public key published in a URL and read by App server periodically
+
+// Private key to sign and create - server only
+const RSA_PRIVATE_KEY = fs.readFileSync('./' + config.RSA_PRIVATE_KEY_FILE);
+
+const TOKEN_EXPIRES_IN = '2h';
+
+// Public key to validate - shared
+const RSA_PUBLIC_KEY = fs.readFileSync('./' + config.RSA_PUBLIC_KEY_FILE);
 
 /**
  * Authenticate the user and returns a token on success.
@@ -51,13 +60,6 @@ async function authenticate(username, password) {
   return result;
 }
 
-// Why algorithm RS265?     (replacing HS256)
-// Only deploy private key to auth server, and not across all servers
-// Allows public key published in a URL and read by App server periodically
-
-// Private key to sign and create - server only
-const RSA_PRIVATE_KEY = fs.readFileSync('./' + config.RSA_PRIVATE_KEY_FILE);
-const TOKEN_EXPIRES_IN = '2h';
 
 /**
  * Creates a JWT Bearer token from the passed username + private key combo.
@@ -88,16 +90,16 @@ function createToken(userId) {
   }
 }
 
-// Public key to validate - shared
-const RSA_PUBLIC_KEY = fs.readFileSync('./' + config.RSA_PUBLIC_KEY_FILE);
-
-// Expectes Header: Authorization Bearer <MY_TOKEN_FROM_CREATE_TOKEN>
-// Probably used as Middlewear
-// Why use lib to verify? Easy to get check logic wrong.
+/**
+ * Expectes Header: Authorization Bearer <MY_TOKEN_FROM_CREATE_TOKEN>
+ * Probably used as Middlewear
+ * Why use lib to verify? Easy to get check logic wrong.
+ */
 const verifyToken = expressJwt({
   secret: RSA_PUBLIC_KEY,
   algorithms: ['sha1', 'RS256', 'HS256'],
 });
+
 
 module.exports = {
   authenticate,

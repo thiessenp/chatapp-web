@@ -1,6 +1,8 @@
 const express = require('express');
 const router = new express.Router();
-const accountResource = require('../resources/account');
+// const Account = require('../models/account'); -- TODO
+
+const auth = require('../middleware/auth');
 
 
 router.get('/', async function(req, res, next) {
@@ -11,7 +13,7 @@ router.get('/', async function(req, res, next) {
     return res.sendStatus(400);
   }
 
-  const authenticateData = await accountResource.authenticate(
+  const authenticateData = await auth.authenticate(
       username,
       password,
   );
@@ -35,5 +37,6 @@ router.get('/', async function(req, res, next) {
     expiresIn: authenticateData.expiresIn, // Not sure
   });
 });
+
 
 module.exports = router;
