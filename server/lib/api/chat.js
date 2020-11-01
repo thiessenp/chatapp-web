@@ -5,6 +5,7 @@
 const express = require('express');
 
 const auth = require('../middleware/auth');
+const format = require('../utils/format');
 const chatService = require('../services/chat');
 const transcriptService = require('../services/transcript');
 const rosterService = require('../services/roster');
@@ -15,16 +16,13 @@ const router = new express.Router();
 router.post('/', auth.isAuthenticated, async function(req, res, next) {
   const name = req.body.name;
   if (!name) {
-    return res.sendStatus(400);
+    const err = {error: format.errorData(400, 'Name param must be sent.')};
+    return res.status(err.error.code).send(format.response(err));
   }
 
   const result = await chatService.createChat(name);
   if (result.error) {
-    return res.status(500).send({'error': result.error});
-  }
-
-  if (result.data.rowCount !== 1) {
-    return res.status(500).send({'error': 'createChat failed DB insertion'});
+    return res.status(result.error.code).send(format.response(result));
   }
 
   res.sendStatus(201);
@@ -32,40 +30,42 @@ router.post('/', auth.isAuthenticated, async function(req, res, next) {
 
 router.get('/', auth.isAuthenticated, async function(req, res, next) {
   const result = await chatService.getChats();
+
   if (result.error) {
-    return res.status(500).send({'error': result.error});
+    return res.status(result.error.code).send(format.response(result));
   }
 
-  res.status(200).json({data: result.data.rows});
+  res.status(200).json(format.response(result));
 });
 
 router.get('/:chat_id', auth.isAuthenticated, async function(req, res, next) {
   const chatId = req.params.chat_id;
 
-  const chatResult = await chatService.getChat(chatId);
-  if (chatResult.error) {
-    return res.status(500).send({'error': chatResult.error});
+  const cResult = await chatService.getChat(chatId);
+  if (cResult.error) {
+    return res.status(cResult.error.code).send(format.response(cResult));
   }
 
-  const transcriptResult = await transcriptService.getTranscript(chatId);
-  if (transcriptResult.error) {
-    return res.status(500).send({'error': transcriptResult.error});
+  const tResult = await transcriptService.getTranscript(chatId);
+  if (tResult.error) {
+    return res.status(tResult.error.code).send(format.response(tResult));
   }
 
-  const rosterResult = await rosterService.getRoster(chatId);
-  if (rosterResult.error) {
-    return res.status(500).send({'error': rosterResult.error});
+  const rResult = await rosterService.getRoster(chatId);
+  if (rResult.error) {
+    return res.status(rResult.error.code).send(format.response(rResult));
   }
 
-  // Gather all Chat data in a formatted chat object
+  // Gather all Chat data in an object
   const chatData = {
-    // 0 since Should only be one chat
-    chat: chatResult.rows[0],
-    transcript: transcriptResult.rows,
-    roster: rosterResult.rows,
+    data: {
+      chat: cResult.data,
+      transcript: tResult.data,
+      roster: rResult.data,
+    },
   };
 
-  res.status(200).json({data: chatData});
+  res.status(200).json(format.response(chatData));
 });
 
 

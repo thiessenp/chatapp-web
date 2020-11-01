@@ -1,5 +1,6 @@
 const dbClient = require('../drivers/postgreSQL');
 const log = require('../utils/log');
+const format = require('../utils/format.js');
 
 /**
  * Creates a new chat in the DB
@@ -15,7 +16,16 @@ async function createChat(name) {
         log('createChat query failed:', error);
         return {error: error};
       });
-  return result;
+
+  if (result.error) {
+    return {error: format.errorData(500, result.error)};
+  }
+
+  if (result.data.rowCount !== 1) {
+    return {error: format.errorData(400, 'Chat already exists?')};
+  }
+
+  return {data: result.rows};
 }
 
 /**
@@ -25,14 +35,21 @@ async function createChat(name) {
    */
 async function getChats() {
   const result = await dbClient.getChats()
-      .then((data) => {
-        return {data: data};
-      })
+      .then((data) => data)
       .catch((error) => {
         log('createChat query failed:', error);
         return {error: error};
       });
-  return result;
+
+  if (result.error) {
+    return {error: format.errorData(500, result.error)};
+  }
+
+  if (result.rows === undefined || result.rows.length === 0) {
+    return {error: format.errorData(404)};
+  }
+
+  return {data: result.rows};
 }
 
 /**
@@ -48,7 +65,16 @@ async function getChat(id) {
         return {error: error};
       });
 
-  return result;
+  if (result.error) {
+    return {error: format.errorData(500, result.error)};
+  }
+
+  if (result.rows === undefined || result.rows.length === 0) {
+    return {error: format.errorData(404)};
+  }
+
+  // 0 since Should only be one chat
+  return {data: result.rows[0]};
 }
 
 

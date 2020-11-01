@@ -313,7 +313,7 @@
 							"// Get chats, should be at least 2\r",
 							"jsonData = JSON.parse(responseBody);\r",
 							"chats = jsonData.data;\r",
-							"tests[\"Two chats created\"] = chats.length === 2;\r",
+							"tests[\"Two chats created\"] = chats.length >= 2;\r",
 							"\r",
 							"// Set Two Chat IDs to use in future tests\r",
 							"postman.setGlobalVariable(\"chat_id1\", chats[0].id);\r",

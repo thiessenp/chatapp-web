@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS account;
 
 CREATE TABLE account (
     id uuid PRIMARY KEY default uuid_generate_v4(),
-    username VARCHAR (50) NOT NULL, -- TODO consider, needs to be unique
+    username VARCHAR (50) NOT NULL UNIQUE,
     password VARCHAR (50) NOT NULL,
     is_authenticated BOOLEAN DEFAULT FALSE
 );
