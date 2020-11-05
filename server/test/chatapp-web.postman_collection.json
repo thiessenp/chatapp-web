@@ -75,11 +75,11 @@
 					"script": {
 						"id": "a0c8e50f-5b58-4409-ba83-5d617ffe522a",
 						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 404;\r",
+							"tests[\"Status code is 404\"] = responseCode.code === 404;\r",
 							"\r",
 							"// Get and 404 message\r",
-							"jsonData = JSON.parse(responseBody);\r",
-							"tests[\"404 message present\"] = jsonData.message !== undefined;\r",
+							"// jsonData = JSON.parse(responseBody);\r",
+							"// tests[\"404 message present\"] = jsonData.message !== undefined;\r",
 							""
 						],
 						"type": "text/javascript"
@@ -162,7 +162,10 @@
 							"value": "changeme",
 							"type": "text"
 						}
-					]
+					],
+					"options": {
+						"urlencoded": {}
+					}
 				},
 				"url": {
 					"raw": "{{HOST}}:{{PORT}}/api/login",
@@ -173,18 +176,6 @@
 					"path": [
 						"api",
 						"login"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "username1",
-							"disabled": true
-						},
-						{
-							"key": "password",
-							"value": "password1",
-							"disabled": true
-						}
 					]
 				}
 			},
@@ -281,6 +272,67 @@
 							"key": "name",
 							"value": "New Chat",
 							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chat",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chat (fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0dfe0dc6-dc0c-43f8-b0c0-0c5f608115ad",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 400\"] = responseCode.code === 400;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "New Chat",
+							"type": "text",
+							"disabled": true
 						}
 					]
 				},

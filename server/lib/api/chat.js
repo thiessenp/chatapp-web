@@ -1,34 +1,28 @@
 /**
  * Handles HTTP status codes and formatting the resource response
  */
-
 const express = require('express');
 
-const auth = require('../middleware/auth');
+const {isAuthenticated} = require('../middleware/auth');
 const format = require('../utils/format');
 const chatService = require('../services/chat');
 const transcriptService = require('../services/transcript');
 const rosterService = require('../services/roster');
+// const {BadRequest} = require('../utils/errors');
+const {catchAsyncError} = require('../middleware/errorHandler');
 
 const router = new express.Router();
 
 
-router.post('/', auth.isAuthenticated, async function(req, res, next) {
+// Creates a new message
+router.post('/', isAuthenticated, catchAsyncError(async function(req, res) {
   const name = req.body.name;
-  if (!name) {
-    const err = {error: format.errorData(400, 'Name param must be sent.')};
-    return res.status(err.error.code).send(format.response(err));
-  }
-
-  const result = await chatService.createChat(name);
-  if (result.error) {
-    return res.status(result.error.code).send(format.response(result));
-  }
-
+  await chatService.createChat(name);
   res.sendStatus(201);
-});
+}));
 
-router.get('/', auth.isAuthenticated, async function(req, res, next) {
+// API to get top level Chat detail
+router.get('/', isAuthenticated, async function(req, res, next) {
   const result = await chatService.getChats();
 
   if (result.error) {
@@ -38,7 +32,8 @@ router.get('/', auth.isAuthenticated, async function(req, res, next) {
   res.status(200).json(format.response(result));
 });
 
-router.get('/:chat_id', auth.isAuthenticated, async function(req, res, next) {
+// API to get a Chat with all messages and users
+router.get('/:chat_id', isAuthenticated, async function(req, res, next) {
   const chatId = req.params.chat_id;
 
   const cResult = await chatService.getChat(chatId);

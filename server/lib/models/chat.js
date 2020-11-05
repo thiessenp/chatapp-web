@@ -7,6 +7,8 @@
 function Chat(o={}) {
   this.id = o.id;
   this.name = o.id;
+  this.transcript = []; // of message
+  this.roster = []; // of user
 }
 
 module.exports = Chat;

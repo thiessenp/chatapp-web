@@ -1,6 +1,7 @@
 const dbClient = require('../drivers/postgreSQL');
 const log = require('../utils/log');
 const format = require('../utils/format.js');
+const {BadRequest} = require('../utils/errors');
 
 /**
  * Creates a new chat in the DB
@@ -8,24 +9,21 @@ const format = require('../utils/format.js');
  * @return {Object} Query result on success or error object on fail.
  */
 async function createChat(name) {
+  if (!name) {
+    throw new BadRequest('Name param must be sent.');
+  }
+
   const result = await dbClient.createChat(name)
-      .then((data) => {
-        return {data: data};
-      })
-      .catch((error) => {
-        log('createChat query failed:', error);
-        return {error: error};
+      .then((data) => data)
+      .catch((e) => {
+        throw e; // new GeneralError('createChat query failed');
       });
 
-  if (result.error) {
-    return {error: format.errorData(500, result.error)};
+  if (result.rowCount !== 1) {
+    throw new BadRequest('Chat failed to create. Already exists?');
   }
 
-  if (result.data.rowCount !== 1) {
-    return {error: format.errorData(400, 'Chat already exists?')};
-  }
-
-  return {data: result.rows};
+  return {data: {success: true}};
 }
 
 /**

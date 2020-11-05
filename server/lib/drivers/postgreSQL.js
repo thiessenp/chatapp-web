@@ -7,6 +7,14 @@
  * like a route request.
  */
 
+// DESING NOTE:
+// Move validation to Route/Services - this just exposes SQL query and result.
+// Errors may bubble up though which is OK. Goal to keep checking in 1-place.
+//
+// e.g. DO NOT:
+// if (!name) { throw new BadRequest('SQL createChat name must be valid'); }
+
+
 /**
  * Note:
  * - pool.query: For convenience, sets up pool.connect, does the query, and
@@ -17,6 +25,7 @@
 const {Pool} = require('pg');
 
 const log = require('../utils/log');
+// const {GeneralError} = require('../utils/errors');
 
 
 const pgConfig = {
@@ -49,12 +58,14 @@ setTimeout(() => {
   });
 }, 3000);
 
+
 /**
  * Checks whether the DB is UP or not. Returns data, then UP.
  *
  * @return {Object} Current time
  */
 function healthCheck() {
+  // General test, if anything is selectable, DB is UP
   return pool.query('SELECT NOW()');
 }
 
@@ -74,9 +85,6 @@ function getAccountByUsername(username) {
  * @return {Object} result of query
  */
 function createChat(name) {
-  if (!name) {
-    throw Error('SQL createChat name must be valid');
-  }
   return pool.query(`INSERT INTO chat (name) VALUES ('${name}')`);
 }
 
@@ -113,6 +121,24 @@ function getTranscript(id) {
 }
 
 /**
+ * Creates a new message used in Transcript
+ * @param {String} chatId - Name of chat
+ * @param {UUID} fromChatUserId creator user Id
+ * @param {UUID} toChatUserId destination user Id (use fromChatUserId if none)
+ * @param {String} content message content
+ * @return {Object} result of query
+ */
+function createMessage(chatId, fromChatUserId, toChatUserId, content) {
+  if (!chatId || !fromChatUserId || !toChatUserId || !content) {
+    throw Error('SQL createMessage must have valid params');
+  }
+  return pool.query(`
+    INSERT INTO chat_message (chat_id, from_chat_user_id, to_chat_user_id, content) 
+    VALUES('${chatId}', '${fromChatUserId}', '${toChatUserId}', '${content}')
+    `);
+}
+
+/**
  * Gets a chat roster of users
  * @param {UUID} id - id of chat to get
  * @return {Object} result of query
@@ -131,5 +157,6 @@ module.exports = {
   getChats,
   getChat,
   getTranscript,
+  createMessage,
   getRoster,
 };

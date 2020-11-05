@@ -5,7 +5,10 @@ const cors = require('cors');
 const logger = require('morgan');
 
 const config = require('./config');
+// require('debug'); -- silent? so wrote my own
 const log = require('./utils/log');
+const {errorHandler} = require('./middleware/errorHandler');
+const {NotFound, NotAuthorized} = require('./utils/errors');
 
 const app = express();
 
@@ -29,10 +32,33 @@ app.use(bodyParser.urlencoded({extended: true})); // True for bet. JSON UX
 
 app.use(cookieParser());
 
-// API routes
+// API ROUTES
+//
 // Static files? then enable at that time and create a public dir for it
 // app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('./api/index'));
+//
+app.use('/api/', require('./api/root'));
+app.use('/api/healthCheck', require('./api/healthCheck'));
+app.use('/api/login', require('./api/login'));
+app.use('/api/chat', require('./api/chat'));
+// TODO: figure out how the below works? e.g. why diff sig. change behavor?!
+//
+// IMPORTANT: keep Method Signature as is, e.g. add `err` and will fail
+app.all('*', (req, res, next) => {
+  // Handles 404 errors
+  errorHandler(new NotFound('Route not found'), req, res, next);
+});
+// IMPORTANT: keep Method Signature as is, e.g. rem `next` and will fail
+app.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError') {
+    // Handles 401 errors
+    errorHandler(new NotAuthorized('Invalid token.'), req, res, next);
+  } else {
+    // Handles other defined errors and catch all as 500 error
+    errorHandler(err, req, res);
+  }
+});
+
 
 log(`Client started on PORT=${config.PORT}`);
 
