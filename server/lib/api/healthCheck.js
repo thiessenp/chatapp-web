@@ -3,14 +3,14 @@
  */
 
 const express = require('express');
-const {isAuthenticated} = require('../middleware/auth');
+// const {isAuthenticated} = require('../middleware/auth');
 const {getHealthCheck} = require('../services/healthCheck');
 const {GeneralError} = require('../utils/errors');
 
 const router = new express.Router();
 
-
-router.get('/', isAuthenticated, async function(req, res, next) {
+// NOTE: Example of OTHER way to catch errors without `catchAsyncError`
+router.get('/', async function(req, res, next) {
   try {
     const result = await getHealthCheck();
 

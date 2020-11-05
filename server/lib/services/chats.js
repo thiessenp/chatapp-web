@@ -1,12 +1,13 @@
 const dbClient = require('../drivers/postgreSQL');
-const log = require('../utils/log');
-const format = require('../utils/format.js');
-const {BadRequest} = require('../utils/errors');
+// const log = require('../utils/log');
+// const format = require('../utils/format.js');
+const {BadRequest, NotFound, GeneralError} = require('../utils/errors');
+
 
 /**
  * Creates a new chat in the DB
  * @param {String} name - Name for new chat
- * @return {Object} Query result on success or error object on fail.
+ * @return {Boolean} true on success (error on fail).
  */
 async function createChat(name) {
   if (!name) {
@@ -16,35 +17,30 @@ async function createChat(name) {
   const result = await dbClient.createChat(name)
       .then((data) => data)
       .catch((e) => {
-        throw e; // new GeneralError('createChat query failed');
+        throw e;
       });
 
   if (result.rowCount !== 1) {
     throw new BadRequest('Chat failed to create. Already exists?');
   }
 
-  return {data: {success: true}};
+  return true;
 }
 
 /**
-   * Creates a new chat in the DB
+   * Gets all chats
    * @param {String} name - Name for new chat
    * @return {Object} Query result on success or error object on fail.
    */
 async function getChats() {
   const result = await dbClient.getChats()
       .then((data) => data)
-      .catch((error) => {
-        log('createChat query failed:', error);
-        return {error: error};
+      .catch((e) => {
+        throw e;
       });
 
-  if (result.error) {
-    return {error: format.errorData(500, result.error)};
-  }
-
   if (result.rows === undefined || result.rows.length === 0) {
-    return {error: format.errorData(404)};
+    throw new GeneralError('No chats found but default should exist.');
   }
 
   return {data: result.rows};
@@ -56,19 +52,18 @@ async function getChats() {
    * @return {Object} all Chat data
    */
 async function getChat(id) {
-  const result = await dbClient.getChat(id)
-      .then((data) => data)
-      .catch((error) => {
-        log('getChat query failed:', error);
-        return {error: error};
-      });
-
-  if (result.error) {
-    return {error: format.errorData(500, result.error)};
+  if (!id) {
+    throw new BadRequest('getChat id must be valid');
   }
 
+  const result = await dbClient.getChat(id)
+      .then((data) => data)
+      .catch((e) => {
+        throw e;
+      });
+
   if (result.rows === undefined || result.rows.length === 0) {
-    return {error: format.errorData(404)};
+    throw new NotFound(`Chat with id ${id} not found.`);
   }
 
   // 0 since Should only be one chat

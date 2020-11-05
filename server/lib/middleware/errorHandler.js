@@ -2,6 +2,7 @@ const config = require('../config');
 const log = require('../utils/log');
 const {GeneralError} = require('../utils/errors');
 
+
 /**
  * Handles formating error and creating a response
  * Note: be careful of cases where headers have already started sending(?)
@@ -72,6 +73,7 @@ function catchAsyncError(fn) {
     fn(req, res, next).catch((err) => next(err));
   };
 }
+
 
 module.exports = {
   errorHandler,

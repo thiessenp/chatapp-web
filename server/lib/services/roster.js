@@ -1,5 +1,5 @@
 const dbClient = require('../drivers/postgreSQL');
-const log = require('../utils/log');
+const {BadRequest} = require('../utils/errors');
 
 
 /**
@@ -8,14 +8,22 @@ const log = require('../utils/log');
    * @return {Object} roster user list data
    */
 async function getRoster(id) {
+  if (!id) {
+    throw new BadRequest('getRoster id must be valid');
+  }
+
   const result = await dbClient.getRoster(id)
       .then((data) => data)
-      .catch((error) => {
-        log('getRoster query failed:', error);
-        return {error: error};
+      .catch((e) => {
+        throw e;
       });
 
-  return result;
+  if (result.rows === undefined) {
+    throw new BadRequest('getRoster result Rows was oddly undefined.');
+  }
+
+  // Roster is empty until it has users, so set a default if none
+  return {data: result.rowCount > 0 ? result.rows : []};
 }
 
 

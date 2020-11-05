@@ -1,7 +1,8 @@
-/**
- * Handles HTTP status codes and formatting the resource response
- */
-
+//
+//
+// TODO
+//
+//
 const express = require('express');
 
 const {isAuthenticated} = require('../middleware/auth');

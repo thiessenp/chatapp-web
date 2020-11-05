@@ -68,6 +68,54 @@
 			"response": []
 		},
 		{
+			"name": "localhost:3000/api/healthCheck",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c1395c45-1f49-4833-b58d-82a4cd6015eb",
+						"exec": [
+							"// Token set from login in global var, global var used in Authorization part"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/healthCheck",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"healthCheck"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "{{HOST}}:{{PORT}}/api/404",
 			"event": [
 				{
@@ -182,55 +230,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/healthCheck",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "c1395c45-1f49-4833-b58d-82a4cd6015eb",
-						"exec": [
-							"// Token set from login in global var, global var used in Authorization part"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{idToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/healthCheck",
-					"host": [
-						"{{HOST}}"
-					],
-					"port": "{{PORT}}",
-					"path": [
-						"api",
-						"healthCheck"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3000/api/chat",
+			"name": "localhost:3000/api/chats",
 			"event": [
 				{
 					"listen": "test",
@@ -276,21 +276,21 @@
 					]
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/chat",
+					"raw": "{{HOST}}:{{PORT}}/api/chats",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"chat"
+						"chats"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/chat (fail)",
+			"name": "localhost:3000/api/chats (fail)",
 			"event": [
 				{
 					"listen": "test",
@@ -337,21 +337,21 @@
 					]
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/chat",
+					"raw": "{{HOST}}:{{PORT}}/api/chats",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"chat"
+						"chats"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/chat",
+			"name": "localhost:3000/api/chats",
 			"event": [
 				{
 					"listen": "test",
@@ -404,21 +404,21 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/chat",
+					"raw": "{{HOST}}:{{PORT}}/api/chats",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"chat"
+						"chats"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/chat/\"1\"",
+			"name": "localhost:3000/api/chats/\"1\"",
 			"event": [
 				{
 					"listen": "test",
@@ -462,14 +462,14 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/chat/{{chat_id1}}",
+					"raw": "{{HOST}}:{{PORT}}/api/chats/{{chat_id1}}",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"chat",
+						"chats",
 						"{{chat_id1}}"
 					]
 				}
@@ -477,7 +477,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/chat/\"2\"",
+			"name": "localhost:3000/api/chats/\"2\"",
 			"event": [
 				{
 					"listen": "test",
@@ -521,14 +521,14 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/chat/{{chat_id2}}",
+					"raw": "{{HOST}}:{{PORT}}/api/chats/{{chat_id2}}",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"chat",
+						"chats",
 						"{{chat_id2}}"
 					]
 				}

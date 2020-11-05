@@ -40,7 +40,7 @@ app.use(cookieParser());
 app.use('/api/', require('./api/root'));
 app.use('/api/healthCheck', require('./api/healthCheck'));
 app.use('/api/login', require('./api/login'));
-app.use('/api/chat', require('./api/chat'));
+app.use('/api/chats', require('./api/chats'));
 // TODO: figure out how the below works? e.g. why diff sig. change behavor?!
 //
 // IMPORTANT: keep Method Signature as is, e.g. add `err` and will fail
@@ -59,9 +59,7 @@ app.use((err, req, res, next) => {
   }
 });
 
-
 log(`Client started on PORT=${config.PORT}`);
 
 
 module.exports = app;
-

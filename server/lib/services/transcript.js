@@ -1,5 +1,5 @@
 const dbClient = require('../drivers/postgreSQL');
-const log = require('../utils/log');
+const {BadRequest} = require('../utils/errors');
 
 
 /**
@@ -8,14 +8,22 @@ const log = require('../utils/log');
    * @return {Object} transcript list data
    */
 async function getTranscript(id) {
+  if (!id) {
+    throw new BadRequest('getTranscript id must be valid');
+  }
+
   const result = await dbClient.getTranscript(id)
       .then((data) => data)
-      .catch((error) => {
-        log('getTranscript query failed:', error);
-        return {error: error};
+      .catch((e) => {
+        throw e;
       });
 
-  return result;
+  if (result.rows === undefined) {
+    throw new BadRequest('getTranscript result Rows was oddly undefined.');
+  }
+
+  // Transcript is empty until it has messges, so set a default if none
+  return {data: result.rowCount > 0 ? result.rows : []};
 }
 
 

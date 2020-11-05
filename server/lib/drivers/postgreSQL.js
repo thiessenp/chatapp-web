@@ -59,6 +59,16 @@ setTimeout(() => {
 }, 3000);
 
 
+//
+//
+// TODO:
+// 1. Generic SQL query function
+// 2. move SQL to service calls
+//
+// -OR- is it more convenient to have SQL querries in one place?
+//
+
+
 /**
  * Checks whether the DB is UP or not. Returns data, then UP.
  *
@@ -102,9 +112,6 @@ function getChats() {
  * @return {Object} result of query
  */
 function getChat(id) {
-  if (!id) {
-    throw Error('SQL getChat id must be valid');
-  }
   return pool.query(`SELECT * FROM chat WHERE id='${id}'`);
 }
 
@@ -114,10 +121,16 @@ function getChat(id) {
  * @return {Object} result of query
  */
 function getTranscript(id) {
-  if (!id) {
-    throw Error('SQL getTranscript id must be valid');
-  }
   return pool.query(`SELECT * FROM transcript WHERE chat_id='${id}'`);
+}
+
+/**
+ * Gets a chat roster of users
+ * @param {UUID} id - id of chat to get
+ * @return {Object} result of query
+ */
+function getRoster(id) {
+  return pool.query(`SELECT * FROM roster WHERE chat_id='${id}'`);
 }
 
 /**
@@ -129,6 +142,7 @@ function getTranscript(id) {
  * @return {Object} result of query
  */
 function createMessage(chatId, fromChatUserId, toChatUserId, content) {
+  // TODO MOVE TO SERVICE
   if (!chatId || !fromChatUserId || !toChatUserId || !content) {
     throw Error('SQL createMessage must have valid params');
   }
@@ -138,17 +152,6 @@ function createMessage(chatId, fromChatUserId, toChatUserId, content) {
     `);
 }
 
-/**
- * Gets a chat roster of users
- * @param {UUID} id - id of chat to get
- * @return {Object} result of query
- */
-function getRoster(id) {
-  if (!id) {
-    throw Error('SQL getRoster id must be valid');
-  }
-  return pool.query(`SELECT * FROM roster WHERE chat_id='${id}'`);
-}
 
 module.exports = {
   healthCheck,
