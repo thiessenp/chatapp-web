@@ -41,14 +41,17 @@ app.use('/api/', require('./api/root'));
 app.use('/api/healthCheck', require('./api/healthCheck'));
 app.use('/api/login', require('./api/login'));
 app.use('/api/chats', require('./api/chats'));
+
 // TODO: figure out how the below works? e.g. why diff sig. change behavor?!
 //
 // IMPORTANT: keep Method Signature as is, e.g. add `err` and will fail
+// Because: no err because not middleweare
 app.all('*', (req, res, next) => {
   // Handles 404 errors
   errorHandler(new NotFound('Route not found'), req, res, next);
 });
 // IMPORTANT: keep Method Signature as is, e.g. rem `next` and will fail
+// Because must be middleware .use, since not know route, so need err
 app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     // Handles 401 errors

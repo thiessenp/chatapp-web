@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 const config = require('../config');
-const log = require('../utils/log');
+// const log = require('../utils/log');
 const dbClient = require('../drivers/postgreSQL');
-const Account = require('../models/account');
+// const Account = require('../models/account');
 const {NotAuthorized} = require('../utils/errors');
 
 // Why algorithm RS265?     (replacing HS256)
@@ -24,13 +24,12 @@ const TOKEN_EXPIRES_IN = '2h';
  * @return {Object} token and expires time on success, error on fail
  */
 async function authenticate(username, password) {
-  const account = new Account({username, password});
+  // Error for bad params in route - just as diff example
 
-  const result = await dbClient
-      .getAccountByUsername(account.username, account.password)
+  const result = await dbClient.getAccountByUsername(username)
       .then((data) => {
         // Failed authentication cases
-        if (data.rows.length <= 0) {
+        if (data.rowCount !== 1) {
           throw new NotAuthorized('Username not found');
         }
         if (password !== data.rows[0].password) {
@@ -46,13 +45,10 @@ async function authenticate(username, password) {
           expiresIn: jwtBearerTokenInfo.expires,
         };
       })
-      .catch((error) => {
-        // TODO probably log instead?
-        // if (error.message === 'JsonWebTokenError') { throw Error(error);}
-
-        log('authAccount failed:', error);
+      .catch((e) => {
         return false;
       });
+
   return result;
 }
 

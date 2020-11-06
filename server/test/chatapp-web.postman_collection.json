@@ -192,8 +192,8 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "",
 						"type": "text",
+						"value": "",
 						"disabled": true
 					}
 				],
@@ -202,7 +202,7 @@
 					"urlencoded": [
 						{
 							"key": "username",
-							"value": "username",
+							"value": "admin",
 							"type": "text"
 						},
 						{
@@ -530,6 +530,71 @@
 						"api",
 						"chats",
 						"{{chat_id2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chats/\"1\"/messages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1a5a9c56-ed27-4083-96b7-a7538ecdcafb",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"// tests[\"Status code is 200\"] = responseCode.code === 201;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "fromChatUserId",
+							"value": "fe6b61ed-18b3-4a29-aa20-404f3385d212",
+							"type": "text"
+						},
+						{
+							"key": "toChatUserId",
+							"value": "5364acd6-00c6-4311-8084-c3b9e27331d0",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "A new message!",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chats/{{chat_id1}}/messages",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chats",
+						"{{chat_id1}}",
+						"messages"
 					]
 				}
 			},

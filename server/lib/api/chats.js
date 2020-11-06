@@ -8,13 +8,14 @@ const {isAuthenticated} = require('../middleware/auth');
 const chatService = require('../services/chats');
 const transcriptService = require('../services/transcript');
 const rosterService = require('../services/roster');
+const messageService = require('../services/message');
 // const {BadRequest} = require('../utils/errors');
 const {catchAsyncError} = require('../middleware/errorHandler');
 
 const router = new express.Router();
 
 
-// Creates a new message
+// Creates a new chat
 router.post('/', isAuthenticated, catchAsyncError(async function(req, res) {
   const name = req.body.name;
   await chatService.createChat(name);
@@ -43,6 +44,16 @@ router.get('/:chat_id', isAuthenticated, catchAsyncError(async function(req, res
     },
   };
   res.status(200).json(chatData);
+}));
+
+// Create a new message
+router.post('/:chat_id/messages', catchAsyncError(isAuthenticated, async function(req, res) {
+  const chatId = req.params.chat_id; // uuid
+  const fromChatUserId= req.body.fromChatUserId; // uuid
+  const toChatUserId = req.body.toChatUserId; // uuid
+  const content = req.body.content; // string message
+  await messageService.createMessage(chatId, fromChatUserId, toChatUserId, content);
+  res.sendStatus(201);
 }));
 
 

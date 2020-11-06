@@ -86,7 +86,7 @@ function healthCheck() {
  * @return {Object} User account data if found, or error if not found
  */
 function getAccountByUsername(username) {
-  return pool.query(`SELECT * FROM account WHERE username=${username}`);
+  return pool.query(`SELECT * FROM account WHERE username='${username}'`);
 }
 
 /**
@@ -142,10 +142,6 @@ function getRoster(id) {
  * @return {Object} result of query
  */
 function createMessage(chatId, fromChatUserId, toChatUserId, content) {
-  // TODO MOVE TO SERVICE
-  if (!chatId || !fromChatUserId || !toChatUserId || !content) {
-    throw Error('SQL createMessage must have valid params');
-  }
   return pool.query(`
     INSERT INTO chat_message (chat_id, from_chat_user_id, to_chat_user_id, content) 
     VALUES('${chatId}', '${fromChatUserId}', '${toChatUserId}', '${content}')

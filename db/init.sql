@@ -24,7 +24,7 @@ CREATE TABLE account (
     id uuid PRIMARY KEY default uuid_generate_v4(),
     username VARCHAR (50) NOT NULL UNIQUE,
     password VARCHAR (50) NOT NULL,
-    is_authenticated BOOLEAN DEFAULT FALSE
+    is_authenticated BOOLEAN DEFAULT FALSE  -- TODO: Not sure if will use?
 );
 
 --
@@ -104,4 +104,5 @@ INSERT INTO chat (name) VALUES ('default');
 --- Create a default initial admin to do admin things.
 ---
 INSERT INTO account (username, password) VALUES ('admin', 'changeme');
+INSERT INTO account (username, password) VALUES ('test', 'changeme');
 

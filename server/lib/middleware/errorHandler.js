@@ -67,12 +67,17 @@ function errorHandler(err, req, res) {
  * @param {Function} fn callback with async function
  * @return {Function} closure to call on an error
  */
-function catchAsyncError(fn) {
+const catchAsyncError = (fn) => {
   return (req, res, next) => {
-    // next because next() will automatically be called with the parameter its callback receives
-    fn(req, res, next).catch((err) => next(err));
+    // Edge case of route not found, callback passed is not a promise oddly?
+    try {
+      fn(req, res, next).catch(next);
+    } catch (e) {
+      // Interested in error on stack, not above missing catch error, so leave as is
+      next();
+    }
   };
-}
+};
 
 
 module.exports = {
