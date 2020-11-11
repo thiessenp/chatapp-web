@@ -52,8 +52,9 @@ router.get('/:chat_id', isAuthenticated, catchAsyncError(async function(req, res
 router.post('/:chat_id/users', isAuthenticated, catchAsyncError(async function(req, res) {
   const accountId= req.body.accountId; // uuid
   const chatId = req.params.chat_id; // uuid
-  await rosterService.addUser(accountId, chatId);
-  res.sendStatus(201);
+  const result = await rosterService.addUserTochat(accountId, chatId);
+  const user = {user: result};
+  res.status(201).json({data: user});
 }));
 
 // Create a new message for use in Transcript

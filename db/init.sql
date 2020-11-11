@@ -45,7 +45,8 @@ CREATE TABLE chat_user (
     chat_id uuid NOT NULL,
     is_typing BOOLEAN DEFAULT FALSE,
     CONSTRAINT fk_account_id FOREIGN KEY(account_id) REFERENCES account(id),
-    CONSTRAINT fk_chat_id FOREIGN KEY(chat_id) REFERENCES chat(id)
+    CONSTRAINT fk_chat_id FOREIGN KEY(chat_id) REFERENCES chat(id),
+    UNIQUE (account_id, chat_id)
 );
 
 --

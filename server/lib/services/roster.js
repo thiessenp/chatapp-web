@@ -32,26 +32,31 @@ async function getRoster(id) {
  * @param {UUID} chatId - Name of chat
  * @return {Object} Query result on success or error object on fail.
  */
-async function addUser(accountId, chatId) {
+async function addUserTochat(accountId, chatId) {
   if (!accountId || !chatId) {
     throw new BadRequest('addUser requires accountId, chatId');
   }
 
-  const result = await dbClient
-      .addUser(accountId, chatId)
+  const result = await dbClient.addUser(accountId, chatId)
       .then((data) => data)
       .catch((e) => {
+        // User already added error
+        if (e.code === '23505') {
+          throw new BadRequest('addUserTochat failed. User already added to chat');
+        }
+
+        // Generic error
         throw e;
       });
 
   if (result.rowCount !== 1) {
-    throw new BadRequest('addUser failed. Probably a Client error. Was accountId and chatId correct?');
+    throw new BadRequest('addUserTochat failed. Probably a Client error. Was accountId and chatId correct?');
   }
 
-  return true;
+  return result.rows[0];
 }
 
 module.exports = {
   getRoster,
-  addUser,
+  addUserTochat,
 };

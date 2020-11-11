@@ -169,7 +169,7 @@ function createMessage(chatId, fromChatUserId, toChatUserId, content) {
  */
 function addUser(accountId, chatId) {
   return pool.query(`
-    INSERT INTO chat_user (id, account_id, chat_id) 
+    INSERT INTO chat_user (account_id, chat_id) 
     VALUES('${accountId}', '${chatId}') 
     RETURNING id`);
 }
