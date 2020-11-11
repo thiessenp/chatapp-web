@@ -39,7 +39,7 @@ app.use(cookieParser());
 //
 app.use('/api/', require('./api/index'));
 app.use('/api/health', require('./api/health'));
-app.use('/api/account', require('./api/account'));
+app.use('/api/accounts', require('./api/accounts'));
 app.use('/api/chats', require('./api/chats'));
 
 // TODO: figure out how the below works? e.g. why diff sig. change behavor?!

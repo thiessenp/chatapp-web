@@ -168,7 +168,7 @@
 			"response": []
 		},
 		{
-			"name": "{{HOST}}:{{PORT}}/api/account/login",
+			"name": "{{HOST}}:{{PORT}}/api/accounts/login",
 			"event": [
 				{
 					"listen": "test",
@@ -184,7 +184,7 @@
 							"\r",
 							"// Set Global Token for API uses\r",
 							"postman.setGlobalVariable(\"idToken\", idToken);\r",
-							""
+							"postman.setGlobalVariable(\"account_username\", 'admin');"
 						],
 						"type": "text/javascript"
 					}
@@ -219,15 +219,215 @@
 					}
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/account/login",
+					"raw": "{{HOST}}:{{PORT}}/api/accounts/login",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"account",
+						"accounts",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{HOST}}:{{PORT}}/api/accounts/login (fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9f673c19-873c-4b90-bfd6-c218d99d72b0",
+						"exec": [
+							"// Login should fail with bad password\r",
+							"tests[\"Status code is 401\"] = responseCode.code === 401;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "BADPASSWORD",
+							"type": "text"
+						}
+					],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/accounts/login",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"accounts",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/accounts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "135754ac-0618-4b6e-85b0-7f2ce95d9a9d",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// Get account\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"account = jsonData.data.account;\r",
+							"\r",
+							"// Test account\r",
+							"tests[\"Account username matches login\"] = account.username === postman.getGlobalVariable('account_username');\r",
+							"tests[\"Account id not null\"] = account.id !== undefined;\r",
+							"\r",
+							"// Expose account id, account username already exposed\r",
+							"postman.setGlobalVariable(\"account_id\", account.id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{account_username}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/accounts",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/accounts (fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7d4ec51-dd40-48c1-84c5-da82fd47c684",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 404\"] = responseCode.code === 404;\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "BADUSERNAME",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/accounts",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"accounts"
 					]
 				}
 			},
@@ -593,12 +793,12 @@
 					"urlencoded": [
 						{
 							"key": "fromChatUserId",
-							"value": "fe6b61ed-18b3-4a29-aa20-404f3385d212",
+							"value": "{{account_id}}",
 							"type": "text"
 						},
 						{
 							"key": "toChatUserId",
-							"value": "5364acd6-00c6-4311-8084-c3b9e27331d0",
+							"value": "{{account_id}}",
 							"type": "text"
 						},
 						{

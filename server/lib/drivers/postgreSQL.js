@@ -7,7 +7,8 @@
  * like a route request.
  */
 
-// DESING NOTE:
+
+// DESIGN NOTE:
 // Move validation to Route/Services - this just exposes SQL query and result.
 // Errors may bubble up though which is OK. Goal to keep checking in 1-place.
 //
@@ -62,10 +63,12 @@ setTimeout(() => {
 //
 //
 // TODO:
-// 1. Generic SQL query function
-// 2. move SQL to service calls
+// 1. Generic SQL query function?
+// 2. move SQL to service calls?
 //
 // -OR- is it more convenient to have SQL querries in one place?
+//
+// NO do TODO, case of diff SQL engine then need same SQL
 //
 
 
@@ -88,6 +91,16 @@ function health() {
 function getAccountByUsername(username) {
   return pool.query(`SELECT * FROM account WHERE username='${username}'`);
 }
+
+/**
+ * Log a User in. Currently only need a username
+ *
+ * @param {String} id - username to lookup
+ * @return {Object} User account data if found, or error if not found
+ */
+// function getAccountById(id) {
+//   return pool.query(`SELECT * FROM account WHERE id='${id}'`);
+// }
 
 /**
  * Creates a new chat

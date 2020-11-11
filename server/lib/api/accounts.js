@@ -1,8 +1,19 @@
 const express = require('express');
+
+const {isAuthenticated} = require('../middleware/auth');
+const {BadRequest, NotAuthorized} = require('../utils/errors');
+const {authenticate, getAccountByUsername} = require('../services/accounts');
+const {catchAsyncError} = require('../middleware/errorHandler');
+
 const router = new express.Router();
 
-const {authenticate} = require('../services/account');
-const {BadRequest, NotAuthorized} = require('../utils/errors');
+
+router.get('/', isAuthenticated, catchAsyncError(async function(req, res) {
+  const username = req.body.username;
+  const result = await getAccountByUsername(username);
+  const account = {account: result};
+  res.status(200).json({data: account});
+}));
 
 router.post('/login', async function(req, res, next) {
   const username = req.body.username;
@@ -14,21 +25,19 @@ router.post('/login', async function(req, res, next) {
     }
 
     const authenticateData = await authenticate(username, password);
-
     // User not authorized
-
     if (!authenticateData) {
       throw new NotAuthorized('Username and or password incorrect.');
     }
 
     // User authorized
-
+    //
     // COOKIE:
     // Below prevents XSS, but still vulnerable to CSRF (UI Frmework can protect)
     // HTTP Only: not available to JS
     // Secure Cookie: only over HTTPS
     // res.cookie("SESSIONID", jwtBearerToken, {httpOnly:true, secure:true});
-
+    //
     // JSON BODY:
     // Vulnerable to script injection
     // Client then on every request sends back in Header:

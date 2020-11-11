@@ -2,18 +2,16 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 const config = require('../config');
-// const log = require('../utils/log');
 const dbClient = require('../drivers/postgreSQL');
-// const Account = require('../models/account');
-const {NotAuthorized} = require('../utils/errors');
+const {NotAuthorized, NotFound} = require('../utils/errors');
+
 
 // Why algorithm RS265?     (replacing HS256)
 // Only deploy private key to auth server, and not across all servers
 // Allows public key published in a URL and read by App server periodically
-
+//
 // Private key to sign and create - server only
 const RSA_PRIVATE_KEY = fs.readFileSync('./' + config.RSA_PRIVATE_KEY_FILE);
-
 const TOKEN_EXPIRES_IN = '2h';
 
 /**
@@ -24,14 +22,13 @@ const TOKEN_EXPIRES_IN = '2h';
  * @return {Object} token and expires time on success, error on fail
  */
 async function authenticate(username, password) {
-  // Error for bad params in route - just as diff example
-
+  // Can't reuse local getAccountByUsername, diff error types
   const result = await dbClient.getAccountByUsername(username)
       .then((data) => {
-        // Failed authentication cases
         if (data.rowCount !== 1) {
           throw new NotAuthorized('Username not found');
         }
+
         if (password !== data.rows[0].password) {
           throw new NotAuthorized('Invalid password');
         }
@@ -52,6 +49,31 @@ async function authenticate(username, password) {
   return result;
 }
 
+/**
+ * Gets an Account by username
+ * @param {String} username - used to lookup account
+ * @return {Object} Query result on success or error object on fail.
+ */
+async function getAccountByUsername(username) {
+  const result = await dbClient.getAccountByUsername(username)
+      .then((data) => {
+        if (data.rowCount !== 1) {
+          throw new NotFound('Username not found');
+        }
+
+        return data.rows[0];
+      })
+      .catch((e) => {
+        throw e;
+      });
+
+  const account = result;
+  // Remove password for security reasons
+  delete(account.password);
+  // TODO: Remove is_authenticated since not using, using Token instead
+  delete(account.is_authenticated);
+  return account;
+}
 
 /**
    * Creates a JWT Bearer token from the passed username + private key combo.
@@ -70,7 +92,8 @@ function createToken(userId) {
 
     // Verify and get exp - throws an error if not verified
     const decodedToken = jwt.verify(jwtBearerToken, RSA_PRIVATE_KEY, {
-      algorithms: ['sha1', 'RS256', 'HS256'],
+      // algorithms: ['sha1', 'RS256', 'HS256'],
+      algorithms: ['RS256'],
     });
 
     return {
@@ -84,4 +107,5 @@ function createToken(userId) {
 
 module.exports = {
   authenticate,
+  getAccountByUsername,
 };
