@@ -3,12 +3,13 @@ const dbClient = require('../drivers/postgreSQL');
 
 
 /**
+ * Health Check:
  * Determines the health of the system by weather a DB query completes or not.
  *
  * @return {Object} Query result on success or error object on fail.
  */
-async function getHealthCheck() {
-  const result = await dbClient.healthCheck()
+async function getHealth() {
+  const result = await dbClient.health()
       .then((data) => data)
       .catch((err) => {
         throw err;
@@ -19,5 +20,5 @@ async function getHealthCheck() {
 
 
 module.exports = {
-  getHealthCheck,
+  getHealth,
 };

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = new express.Router();
 
-const {authenticate} = require('../services/login');
+const {authenticate} = require('../services/account');
 const {BadRequest, NotAuthorized} = require('../utils/errors');
 
-router.get('/', async function(req, res, next) {
+router.post('/login', async function(req, res, next) {
   const username = req.body.username;
   const password = req.body.password;
 

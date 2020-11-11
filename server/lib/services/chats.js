@@ -24,7 +24,8 @@ async function createChat(name) {
     throw new BadRequest('Chat failed to create. Already exists?');
   }
 
-  return true;
+  const chatId = result.rows[0].id;
+  return chatId;
 }
 
 /**
@@ -43,7 +44,8 @@ async function getChats() {
     throw new GeneralError('No chats found but default should exist.');
   }
 
-  return {data: result.rows};
+  const chats = result.rows;
+  return chats;
 }
 
 /**

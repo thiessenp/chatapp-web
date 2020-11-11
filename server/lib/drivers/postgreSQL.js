@@ -74,7 +74,7 @@ setTimeout(() => {
  *
  * @return {Object} Current time
  */
-function healthCheck() {
+function health() {
   // General test, if anything is selectable, DB is UP
   return pool.query('SELECT NOW()');
 }
@@ -95,7 +95,7 @@ function getAccountByUsername(username) {
  * @return {Object} result of query
  */
 function createChat(name) {
-  return pool.query(`INSERT INTO chat (name) VALUES ('${name}')`);
+  return pool.query(`INSERT INTO chat (name) VALUES ('${name}') RETURNING id`);
 }
 
 /**
@@ -145,12 +145,25 @@ function createMessage(chatId, fromChatUserId, toChatUserId, content) {
   return pool.query(`
     INSERT INTO chat_message (chat_id, from_chat_user_id, to_chat_user_id, content) 
     VALUES('${chatId}', '${fromChatUserId}', '${toChatUserId}', '${content}')
-    `);
+    RETURNING id`);
+}
+
+/**
+ * Adds a user to a chat in the DB
+ * @param {UUID} accountId - creator user Id
+ * @param {UUID} chatId - chatId user/roster belongs to
+ * @return {Object} result of query
+ */
+function addUser(accountId, chatId) {
+  return pool.query(`
+    INSERT INTO chat_user (id, account_id, chat_id) 
+    VALUES('${accountId}', '${chatId}') 
+    RETURNING id`);
 }
 
 
 module.exports = {
-  healthCheck,
+  health,
   getAccountByUsername,
   createChat,
   getChats,
@@ -158,4 +171,5 @@ module.exports = {
   getTranscript,
   createMessage,
   getRoster,
+  addUser,
 };

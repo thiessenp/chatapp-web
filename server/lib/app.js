@@ -37,9 +37,9 @@ app.use(cookieParser());
 // Static files? then enable at that time and create a public dir for it
 // app.use(express.static(path.join(__dirname, 'public')));
 //
-app.use('/api/', require('./api/root'));
-app.use('/api/healthCheck', require('./api/healthCheck'));
-app.use('/api/login', require('./api/login'));
+app.use('/api/', require('./api/index'));
+app.use('/api/health', require('./api/health'));
+app.use('/api/account', require('./api/account'));
 app.use('/api/chats', require('./api/chats'));
 
 // TODO: figure out how the below works? e.g. why diff sig. change behavor?!

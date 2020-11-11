@@ -68,14 +68,20 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/healthCheck",
+			"name": "localhost:3000/api/health",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"id": "c1395c45-1f49-4833-b58d-82a4cd6015eb",
 						"exec": [
-							"// Token set from login in global var, global var used in Authorization part"
+							"// Token set from login in global var, global var used in Authorization part\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// Get and verify status\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"status = jsonData.status;\r",
+							"tests[\"health status is up\"] = status === 'UP';"
 						],
 						"type": "text/javascript"
 					}
@@ -102,14 +108,14 @@
 					}
 				],
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/healthCheck",
+					"raw": "{{HOST}}:{{PORT}}/api/health",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"healthCheck"
+						"health"
 					]
 				}
 			},
@@ -162,7 +168,7 @@
 			"response": []
 		},
 		{
-			"name": "{{HOST}}:{{PORT}}/api/login",
+			"name": "{{HOST}}:{{PORT}}/api/account/login",
 			"event": [
 				{
 					"listen": "test",
@@ -184,11 +190,8 @@
 					}
 				}
 			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
@@ -216,13 +219,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/login",
+					"raw": "{{HOST}}:{{PORT}}/api/account/login",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
+						"account",
 						"login"
 					]
 				}
@@ -239,7 +243,13 @@
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
-							"tests[\"Status code is 200\"] = responseCode.code === 201;"
+							"tests[\"Status code is 200\"] = responseCode.code === 201;\r",
+							"\r",
+							"// Get chat data and check it\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"chatData = jsonData.data;\r",
+							"tests[\"ID returned with new chat\"] = chatData.id !== undefined;\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -327,14 +337,7 @@
 				],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "name",
-							"value": "New Chat",
-							"type": "text",
-							"disabled": true
-						}
-					]
+					"urlencoded": []
 				},
 				"url": {
 					"raw": "{{HOST}}:{{PORT}}/api/chats",
@@ -364,12 +367,14 @@
 							"\r",
 							"// Get chats, should be at least 2\r",
 							"jsonData = JSON.parse(responseBody);\r",
-							"chats = jsonData.data;\r",
+							"chats = jsonData.data.chats;\r",
 							"tests[\"Two chats created\"] = chats.length >= 2;\r",
 							"\r",
-							"// Set Two Chat IDs to use in future tests\r",
+							"// Set Two Chat IDs and Names to use in future tests\r",
 							"postman.setGlobalVariable(\"chat_id1\", chats[0].id);\r",
+							"postman.setGlobalVariable(\"chat_name1\", chats[0].name);\r",
 							"postman.setGlobalVariable(\"chat_id2\", chats[1].id);\r",
+							"postman.setGlobalVariable(\"chat_name2\", chats[1].name);\r",
 							""
 						],
 						"type": "text/javascript"
@@ -428,6 +433,16 @@
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
 							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// Get chat data\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"chat = jsonData.data.chat;\r",
+							"\r",
+							"// Test previous data matches current\r",
+							"tests[\"Chat ID previous matches current for chat 1\"] = chat.id === postman.getGlobalVariable('chat_id1');\r",
+							"tests[\"Chat Name previous matches current for chat 1\"] = chat.name === postman.getGlobalVariable('chat_name1');\r",
+							"tests[\"Chat Transcript for chat 1 is set\"] = chat.transcript.length >= 0; \r",
+							"tests[\"Chat Roster for chat 1 is set\"] = chat.roster.length >= 0;\r",
 							""
 						],
 						"type": "text/javascript"
@@ -487,7 +502,16 @@
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
 							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
-							""
+							"\r",
+							"// Get chat data\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"chat = jsonData.data.chat;\r",
+							"\r",
+							"// Test previous data matches current\r",
+							"tests[\"Chat ID previous matches current for chat 2\"] = chat.id === postman.getGlobalVariable('chat_id2');\r",
+							"tests[\"Chat Name previous matches current for chat 2\"] = chat.name === postman.getGlobalVariable('chat_name2');\r",
+							"tests[\"Chat Transcript for chat 2 is set\"] = chat.transcript.length >= 0; \r",
+							"tests[\"Chat Roster for chat 2 is set\"] = chat.roster.length >= 0;"
 						],
 						"type": "text/javascript"
 					}

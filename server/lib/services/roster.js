@@ -26,7 +26,32 @@ async function getRoster(id) {
   return {data: result.rowCount > 0 ? result.rows : []};
 }
 
+/**
+ * Adds a user to a chat for use with the roster
+ * @param {UUID} accountId creator user Id
+ * @param {UUID} chatId - Name of chat
+ * @return {Object} Query result on success or error object on fail.
+ */
+async function addUser(accountId, chatId) {
+  if (!accountId || !chatId) {
+    throw new BadRequest('addUser requires accountId, chatId');
+  }
+
+  const result = await dbClient
+      .addUser(accountId, chatId)
+      .then((data) => data)
+      .catch((e) => {
+        throw e;
+      });
+
+  if (result.rowCount !== 1) {
+    throw new BadRequest('addUser failed. Probably a Client error. Was accountId and chatId correct?');
+  }
+
+  return true;
+}
 
 module.exports = {
   getRoster,
+  addUser,
 };
