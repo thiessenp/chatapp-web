@@ -63,8 +63,9 @@ router.post('/:chat_id/messages', isAuthenticated, catchAsyncError(async functio
   const fromChatUserId= req.body.fromChatUserId; // uuid
   const toChatUserId = req.body.toChatUserId; // uuid
   const content = req.body.content; // string message
-  await transcriptService.createMessage(chatId, fromChatUserId, toChatUserId, content);
-  res.sendStatus(201);
+  const result = await transcriptService.createMessage(chatId, fromChatUserId, toChatUserId, content);
+  const message = {message: result};
+  res.status(201).json({data: message});
 }));
 
 

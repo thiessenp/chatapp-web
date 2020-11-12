@@ -43,6 +43,12 @@ async function createMessage(chatId, fromChatUserId, toChatUserId, content) {
       .createMessage(chatId, fromChatUserId, toChatUserId, content)
       .then((data) => data)
       .catch((e) => {
+        // Constraint error
+        if (e.code === '23503') {
+          throw new BadRequest('createMessage failed. Are the to and from user IDs right?');
+        }
+
+        // Generic error
         throw e;
       });
 
@@ -50,7 +56,7 @@ async function createMessage(chatId, fromChatUserId, toChatUserId, content) {
     throw new BadRequest('createMessage failed. Probably a Client error. Was fromChatUserId and toChatUserId correct?');
   }
 
-  return true;
+  return result.rows[0];
 }
 
 

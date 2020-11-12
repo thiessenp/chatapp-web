@@ -41,7 +41,7 @@ async function addUserTochat(accountId, chatId) {
       .then((data) => data)
       .catch((e) => {
         // User already added error
-        if (e.code === '23505') {
+        if (e.code === '23503') {
           throw new BadRequest('addUserTochat failed. User already added to chat');
         }
 

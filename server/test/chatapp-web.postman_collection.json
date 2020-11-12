@@ -760,6 +760,130 @@
 			"response": []
 		},
 		{
+			"name": "localhost:3000/api/chats/\"1\"/users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9b031fa9-383f-4ce2-b25b-933341d12608",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 201\"] = responseCode.code === 201;\r",
+							"\r",
+							"// Get user data\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"user = jsonData.data.user;\r",
+							"\r",
+							"// Test data\r",
+							"tests[\"UserId not empty\"] = user.id !== undefined;\r",
+							"\r",
+							"\r",
+							"// Expose chat 1 user id\r",
+							"postman.setGlobalVariable(\"chat1_user_id\", user.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accountId",
+							"value": "{{account_id}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chats/{{chat_id1}}/users",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chats",
+						"{{chat_id1}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chats/\"1\"/users (fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6533add1-e634-4ad9-88f2-1648d4ebc80b",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"// Should fail. Can only add user to a chat once\r",
+							"tests[\"Status code is 400\"] = responseCode.code === 400;\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accountId",
+							"value": "{{account_id}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chats/{{chat_id1}}/users",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chats",
+						"{{chat_id1}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:3000/api/chats/\"1\"/messages",
 			"event": [
 				{
@@ -793,7 +917,73 @@
 					"urlencoded": [
 						{
 							"key": "fromChatUserId",
-							"value": "{{account_id}}",
+							"value": "{{chat1_user_id}}",
+							"type": "text"
+						},
+						{
+							"key": "toChatUserId",
+							"value": "{{chat1_user_id}}",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "A new message!",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chats/{{chat_id1}}/messages",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chats",
+						"{{chat_id1}}",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/chats/\"1\"/messages (fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4da5e3d5-7550-4df3-bf68-3705c5c6321c",
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"// Should fail. Message toChatUserId is invalid\r",
+							"tests[\"Status code is 400\"] = responseCode.code === 400;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "fromChatUserId",
+							"value": "{{chat1_user_id}}",
 							"type": "text"
 						},
 						{
