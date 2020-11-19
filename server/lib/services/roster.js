@@ -1,4 +1,5 @@
 const dbClient = require('../drivers/postgreSQL');
+const {getRosterQuery, addUserQuery} = require('./sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
 
@@ -12,7 +13,8 @@ async function getRoster(id) {
     throw new BadRequest('getRoster id must be valid');
   }
 
-  const result = await dbClient.getRoster(id)
+  const queryString = getRosterQuery(id);
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((e) => {
         throw e;
@@ -37,11 +39,12 @@ async function addUserTochat(accountId, chatId) {
     throw new BadRequest('addUser requires accountId, chatId');
   }
 
-  const result = await dbClient.addUser(accountId, chatId)
+  const queryString = addUserQuery(accountId, chatId);
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((e) => {
         // User already added error
-        if (e.code === '23503') {
+        if (e.code === '23503' || e.code === '23505') {
           throw new BadRequest('addUserTochat failed. User already added to chat');
         }
 

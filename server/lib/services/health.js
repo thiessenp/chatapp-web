@@ -1,6 +1,8 @@
 const dbClient = require('../drivers/postgreSQL');
 // const log = require('../utils/log');
 
+const {healthQuery} = require('./sqlQueries');
+
 
 /**
  * Health Check:
@@ -9,7 +11,8 @@ const dbClient = require('../drivers/postgreSQL');
  * @return {Object} Query result on success or error object on fail.
  */
 async function getHealth() {
-  const result = await dbClient.health()
+  const queryString = healthQuery();
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((err) => {
         throw err;

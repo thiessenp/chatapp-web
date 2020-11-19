@@ -1,4 +1,5 @@
 const dbClient = require('../drivers/postgreSQL');
+const {getTranscriptQuery, createMessageQuery} = require('./sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
 
@@ -12,7 +13,8 @@ async function getTranscript(id) {
     throw new BadRequest('getTranscript id must be valid');
   }
 
-  const result = await dbClient.getTranscript(id)
+  const queryString = getTranscriptQuery(id);
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((e) => {
         throw e;
@@ -39,8 +41,9 @@ async function createMessage(chatId, fromChatUserId, toChatUserId, content) {
     throw new BadRequest('createMessage requires chatId, fromChatUserId, toChatUserId, and content');
   }
 
+  const queryString = createMessageQuery(chatId, fromChatUserId, toChatUserId, content);
   const result = await dbClient
-      .createMessage(chatId, fromChatUserId, toChatUserId, content)
+      .query(queryString)
       .then((data) => data)
       .catch((e) => {
         // Constraint error

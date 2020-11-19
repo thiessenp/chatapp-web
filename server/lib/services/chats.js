@@ -1,4 +1,5 @@
 const dbClient = require('../drivers/postgreSQL');
+const {createChatQuery, getChatsQuery, getChatQuery} = require('./sqlQueries');
 // const log = require('../utils/log');
 // const format = require('../utils/format.js');
 const {BadRequest, NotFound, GeneralError} = require('../utils/errors');
@@ -14,7 +15,8 @@ async function createChat(name) {
     throw new BadRequest('Name param must be sent.');
   }
 
-  const result = await dbClient.createChat(name)
+  const queryString = createChatQuery(name);
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((e) => {
         throw e;
@@ -34,7 +36,8 @@ async function createChat(name) {
    * @return {Object} Query result on success or error object on fail.
    */
 async function getChats() {
-  const result = await dbClient.getChats()
+  const queryString = getChatsQuery();
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((e) => {
         throw e;
@@ -58,7 +61,8 @@ async function getChat(id) {
     throw new BadRequest('getChat id must be valid');
   }
 
-  const result = await dbClient.getChat(id)
+  const queryString = getChatQuery(id);
+  const result = await dbClient.query(queryString)
       .then((data) => data)
       .catch((e) => {
         throw e;
