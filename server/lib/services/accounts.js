@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 const config = require('../config');
-const dbClient = require('../drivers/postgreSQL');
+const {query} = require('../drivers/postgreSQL');
 const {getAccountByUsernameQuery} = require('./sqlQueries');
 const {NotAuthorized, NotFound} = require('../utils/errors');
 
@@ -23,9 +23,8 @@ const TOKEN_EXPIRES_IN = '2h';
  * @return {Object} token and expires time on success, error on fail
  */
 async function authenticate(username, password) {
-  const queryString = getAccountByUsernameQuery(username);
   // Can't reuse local getAccountByUsername, diff error types
-  const result = await dbClient.query(queryString)
+  const result = await query(getAccountByUsernameQuery(username), true)
       .then((data) => {
         if (data.rowCount !== 1) {
           throw new NotAuthorized('Username not found');
@@ -57,8 +56,7 @@ async function authenticate(username, password) {
  * @return {Object} Query result on success or error object on fail.
  */
 async function getAccountByUsername(username) {
-  const queryString = getAccountByUsernameQuery(username);
-  const result = await dbClient.query(queryString)
+  const result = await query(getAccountByUsernameQuery(username), true)
       .then((data) => {
         if (data.rowCount !== 1) {
           throw new NotFound('Username not found');

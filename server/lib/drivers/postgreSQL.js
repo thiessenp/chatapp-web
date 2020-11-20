@@ -38,10 +38,20 @@ const pool = new Pool(pgConfig);
 
 pool.on('error', (err) => log('DB POOL ERROR:', err));
 
-// TODO do a manual connect call instead? (with timeout in caller?)
-// Check DB to see if we can connect, give a little delay for DB to load though
-setTimeout(() => {
-  pool.connect((err, client, release) => {
+
+/**
+ * Calls initial DB connect, more to make sure connected as expected than
+ * anything.
+ *
+ * (Optional in lifecycle)
+ *
+ * Example for more info:
+ * https://node-postgres.com/guides/project-structure
+ *
+ * @return {object} DB client if needed
+ */
+async function connect() {
+  const client = await pool.connect((err, client, release) => {
     if (err) {
       log('DB CONNECT ERROR', err);
       // TODO
@@ -53,19 +63,34 @@ setTimeout(() => {
 
     release();
   });
-}, 3000);
 
+  return client;
+}
 
 /**
  * Runs an SQL query using the provided queryString
  * @param {String} queryString query to execute
+ * @param {boolean} isReturnPromise true to return the result as a promise
  * @return {object} result of query (a promise)
  */
-function query(queryString) {
-  return pool.query(queryString);
+async function query(queryString, isReturnPromise=false) {
+  const resultPromise = pool.query(queryString);
+
+  if (isReturnPromise) {
+    return resultPromise;
+  }
+
+  const result = await resultPromise
+      .then((data) => data)
+      .catch((e) => {
+        throw e;
+      });
+
+  return result.rows;
 }
 
 
 module.exports = {
+  connect,
   query,
 };

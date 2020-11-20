@@ -1,3 +1,24 @@
+/**
+ * SQL Queries all stored here.
+ *
+ * Could also use PosgreSQL way below, but then just Postgres. So this file is
+ * about keepin queries abstract.
+ *
+ * For example:
+ * const sql = {
+ *  getAccountByUsername: 'SELECT * FROM account WHERE username=$1',
+ * };
+ * ...
+ * const queryString = sql.getAccountByUsername;
+ * ...
+ * const result = await dbClient.query(queryString, name)
+ * ...
+ * function query(queryString, params) {
+ *  return pool.query(queryString, params);
+ * }
+ *
+ */
+
 
 /**
  * Checks whether the DB is UP or not. Returns data, then UP.

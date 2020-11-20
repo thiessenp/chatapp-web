@@ -1,4 +1,4 @@
-const dbClient = require('../drivers/postgreSQL');
+const {query} = require('../drivers/postgreSQL');
 const {getRosterQuery, addUserQuery} = require('./sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
@@ -13,19 +13,14 @@ async function getRoster(id) {
     throw new BadRequest('getRoster id must be valid');
   }
 
-  const queryString = getRosterQuery(id);
-  const result = await dbClient.query(queryString)
-      .then((data) => data)
-      .catch((e) => {
-        throw e;
-      });
+  const result = await query(getRosterQuery(id));
 
-  if (result.rows === undefined) {
+  if (result === undefined) {
     throw new BadRequest('getRoster result Rows was oddly undefined.');
   }
 
   // Roster is empty until it has users, so set a default if none
-  return {data: result.rowCount > 0 ? result.rows : []};
+  return {data: result.length > 0 ? result : []};
 }
 
 /**
@@ -39,8 +34,7 @@ async function addUserTochat(accountId, chatId) {
     throw new BadRequest('addUser requires accountId, chatId');
   }
 
-  const queryString = addUserQuery(accountId, chatId);
-  const result = await dbClient.query(queryString)
+  const result = await query(addUserQuery(accountId, chatId), true)
       .then((data) => data)
       .catch((e) => {
         // User already added error

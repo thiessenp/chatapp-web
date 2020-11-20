@@ -1,4 +1,4 @@
-const dbClient = require('../drivers/postgreSQL');
+const {query} = require('../drivers/postgreSQL');
 const {createChatQuery, getChatsQuery, getChatQuery} = require('./sqlQueries');
 // const log = require('../utils/log');
 // const format = require('../utils/format.js');
@@ -15,18 +15,13 @@ async function createChat(name) {
     throw new BadRequest('Name param must be sent.');
   }
 
-  const queryString = createChatQuery(name);
-  const result = await dbClient.query(queryString)
-      .then((data) => data)
-      .catch((e) => {
-        throw e;
-      });
+  const result = await query(createChatQuery(name));
 
-  if (result.rowCount !== 1) {
+  if (result.length !== 1) {
     throw new BadRequest('Chat failed to create. Already exists?');
   }
 
-  const chatId = result.rows[0].id;
+  const chatId = result[0].id;
   return chatId;
 }
 
@@ -36,18 +31,13 @@ async function createChat(name) {
    * @return {Object} Query result on success or error object on fail.
    */
 async function getChats() {
-  const queryString = getChatsQuery();
-  const result = await dbClient.query(queryString)
-      .then((data) => data)
-      .catch((e) => {
-        throw e;
-      });
+  const result = await query(getChatsQuery());
 
-  if (result.rows === undefined || result.rows.length === 0) {
+  if (result === undefined || result.length === 0) {
     throw new GeneralError('No chats found but default should exist.');
   }
 
-  const chats = result.rows;
+  const chats = result;
   return chats;
 }
 
@@ -61,19 +51,14 @@ async function getChat(id) {
     throw new BadRequest('getChat id must be valid');
   }
 
-  const queryString = getChatQuery(id);
-  const result = await dbClient.query(queryString)
-      .then((data) => data)
-      .catch((e) => {
-        throw e;
-      });
+  const result = await query(getChatQuery(id));
 
-  if (result.rows === undefined || result.rows.length === 0) {
+  if (result === undefined || result.length === 0) {
     throw new NotFound(`Chat with id ${id} not found.`);
   }
 
   // 0 since Should only be one chat
-  return {data: result.rows[0]};
+  return {data: result[0]};
 }
 
 
