@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 const config = require('../config');
-const {sqlEngine} = require('../drivers/sqlEngine');
-const {getAccountByUsernameQuery} = require('./sqlQueries');
+const {sqlEngine} = require('../engines/sqlEngine');
+const {getAccountByUsernameQuery} = require('../engines/sqlQueries');
 const {NotAuthorized, NotFound} = require('../utils/errors');
 
 

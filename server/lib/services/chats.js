@@ -1,5 +1,5 @@
-const {sqlEngine} = require('../drivers/sqlEngine');
-const {createChatQuery, getChatsQuery, getChatQuery} = require('./sqlQueries');
+const {sqlEngine} = require('../engines/sqlEngine');
+const {createChatQuery, getChatsQuery, getChatQuery} = require('../engines/sqlQueries');
 // const log = require('../utils/log');
 // const format = require('../utils/format.js');
 const {BadRequest, NotFound, GeneralError} = require('../utils/errors');

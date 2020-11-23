@@ -1,5 +1,5 @@
-const {sqlEngine} = require('../drivers/sqlEngine');
-const {healthQuery} = require('./sqlQueries');
+const {sqlEngine} = require('../engines/sqlEngine');
+const {healthQuery} = require('../engines/sqlQueries');
 const {GeneralError} = require('../utils/errors');
 
 

@@ -5,7 +5,7 @@ const cors = require('cors');
 const logger = require('morgan');
 
 const config = require('./config');
-const {connect: connectDB} = require('./drivers/postgreSQL');
+const {sqlEngine} = require('./engines/sqlEngine');
 // require('debug'); -- silent? so wrote my own
 const log = require('./utils/log');
 const {errorHandler} = require('./middleware/errorHandler');
@@ -13,8 +13,10 @@ const {NotFound, NotAuthorized} = require('./utils/errors');
 
 const app = express();
 
-// Connect DB check, not required, just making sure.
-connectDB();
+// Test DB connection for form sake but delay for time to load DB.
+// setTimeout(() => {
+sqlEngine.connect();
+// }, 500);
 
 // (TODO) DO in Nginx.
 // See http://nginx.org/en/docs/http/ngx_http_gzip_module.html

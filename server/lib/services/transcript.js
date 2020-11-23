@@ -1,5 +1,5 @@
-const {sqlEngine} = require('../drivers/sqlEngine');
-const {getTranscriptQuery, createMessageQuery} = require('./sqlQueries');
+const {sqlEngine} = require('../engines/sqlEngine');
+const {getTranscriptQuery, createMessageQuery} = require('../engines/sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
 

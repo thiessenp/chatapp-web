@@ -1,5 +1,5 @@
-const {sqlEngine} = require('../drivers/sqlEngine');
-const {getRosterQuery, addUserQuery} = require('./sqlQueries');
+const {sqlEngine} = require('../engines/sqlEngine');
+const {getRosterQuery, addUserQuery} = require('../engines/sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
 

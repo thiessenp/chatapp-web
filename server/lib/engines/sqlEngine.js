@@ -41,7 +41,7 @@ class SqlEngine {
   }
 
   /**
-   * Runs the connect logic on the loaded SQL driver
+   * Runs the connect logic on the loaded SQL driver. Leaving async as a hint
    * @return {Object} client for currently loaded driver or errors if fails
    */
   async connect() {
