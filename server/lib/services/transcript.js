@@ -1,4 +1,4 @@
-const {query} = require('../drivers/postgreSQL');
+const {sqlEngine} = require('../drivers/sqlEngine');
 const {getTranscriptQuery, createMessageQuery} = require('./sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
@@ -13,7 +13,7 @@ async function getTranscript(id) {
     throw new BadRequest('getTranscript id must be valid');
   }
 
-  const result = await query(getTranscriptQuery(id));
+  const result = await sqlEngine.query(getTranscriptQuery(id));
 
   if (result === undefined) {
     throw new BadRequest('getTranscript result Rows was oddly undefined.');
@@ -36,7 +36,7 @@ async function createMessage(chatId, fromChatUserId, toChatUserId, content) {
     throw new BadRequest('createMessage requires chatId, fromChatUserId, toChatUserId, and content');
   }
 
-  const result = await query(createMessageQuery(chatId, fromChatUserId, toChatUserId, content), true)
+  const result = await sqlEngine.queryPromise(createMessageQuery(chatId, fromChatUserId, toChatUserId, content))
       .then((data) => data)
       .catch((e) => {
         // Constraint error

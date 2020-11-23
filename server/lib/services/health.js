@@ -1,4 +1,4 @@
-const {query} = require('../drivers/postgreSQL');
+const {sqlEngine} = require('../drivers/sqlEngine');
 const {healthQuery} = require('./sqlQueries');
 const {GeneralError} = require('../utils/errors');
 
@@ -10,7 +10,7 @@ const {GeneralError} = require('../utils/errors');
  * @return {Object} Query result on success or error object on fail.
  */
 async function getHealth() {
-  const result = await query(healthQuery());
+  const result = await sqlEngine.query(healthQuery());
 
   if (result.length <= 0) {
     throw new GeneralError('Health check failed to query DB.');

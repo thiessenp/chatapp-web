@@ -71,14 +71,10 @@ async function connect() {
  * Runs an SQL query using the provided queryString
  * @param {String} queryString query to execute
  * @param {boolean} isReturnPromise true to return the result as a promise
- * @return {object} result of query (a promise)
+ * @return {object} result of query as data
  */
 async function query(queryString, isReturnPromise=false) {
-  const resultPromise = pool.query(queryString);
-
-  if (isReturnPromise) {
-    return resultPromise;
-  }
+  const resultPromise = queryPromise(queryString);
 
   const result = await resultPromise
       .then((data) => data)
@@ -89,8 +85,18 @@ async function query(queryString, isReturnPromise=false) {
   return result.rows;
 }
 
+/**
+ * Runs an SQL query using the provided queryString
+ * @param {String} queryString query to execute
+ * @return {object} result of query as a promise
+ */
+async function queryPromise(queryString) {
+  return pool.query(queryString);
+}
+
 
 module.exports = {
   connect,
   query,
+  queryPromise,
 };

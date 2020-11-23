@@ -1,4 +1,4 @@
-const {query} = require('../drivers/postgreSQL');
+const {sqlEngine} = require('../drivers/sqlEngine');
 const {createChatQuery, getChatsQuery, getChatQuery} = require('./sqlQueries');
 // const log = require('../utils/log');
 // const format = require('../utils/format.js');
@@ -15,7 +15,7 @@ async function createChat(name) {
     throw new BadRequest('Name param must be sent.');
   }
 
-  const result = await query(createChatQuery(name));
+  const result = await sqlEngine.query(createChatQuery(name));
 
   if (result.length !== 1) {
     throw new BadRequest('Chat failed to create. Already exists?');
@@ -31,7 +31,7 @@ async function createChat(name) {
    * @return {Object} Query result on success or error object on fail.
    */
 async function getChats() {
-  const result = await query(getChatsQuery());
+  const result = await sqlEngine.query(getChatsQuery());
 
   if (result === undefined || result.length === 0) {
     throw new GeneralError('No chats found but default should exist.');
@@ -51,7 +51,7 @@ async function getChat(id) {
     throw new BadRequest('getChat id must be valid');
   }
 
-  const result = await query(getChatQuery(id));
+  const result = await sqlEngine.query(getChatQuery(id));
 
   if (result === undefined || result.length === 0) {
     throw new NotFound(`Chat with id ${id} not found.`);
