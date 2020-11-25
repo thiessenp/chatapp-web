@@ -46,6 +46,29 @@ services:
         networks:
             - backend
 
+    client:
+        container_name: client
+        build:
+            context: ./client
+            dockerfile: Dockerfile.dev
+        ports:
+            - "3001:3000"   # PORTS OUTSIDE to IN..
+        depends_on: 
+            - server
+        restart: on-failure
+        volumes:
+            - /app/node_modules
+            - ./client:/app
+        # Use default in Dockerfile instead in this case
+        # command: npm run start
+        networks:
+            - backend
+            - frontend
+        environment:
+            # - REACT_APP_API_URL=http://localhost:3001/api -- Use .env file instead
+            # Oddly needed now to pickup changes, didn't in the past
+            - CHOKIDAR_USEPOLLING=true 
+
 # Any Volumes to *persist* go here
 # volumes:
 #     postgres-data:
@@ -53,3 +76,4 @@ services:
 # Services by default join network myapp_default as their hostname, override with a network
 networks:
     backend:
+    frontend:

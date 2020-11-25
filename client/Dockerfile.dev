@@ -1,0 +1,20 @@
+# Base image alpine to for minimal size, use standard image instead if issues
+FROM node:12-alpine AS alpine
+
+# All copy, install.. relative to this path inside CONTAINER
+WORKDIR /app
+
+# add `/app/node_modules/.bin` to $PATH     -- Probably not needed
+ENV PATH /app/node_modules/.bin:$PATH
+
+# Copy package-lock to make sure same versions across envs deployed
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install --silent
+RUN npm install react-scripts -g --silent   # -- Probably not be needed
+
+# copy over app
+COPY . ./
+
+# Run this command when the Container starts
+CMD ["npm", "run", "start"]

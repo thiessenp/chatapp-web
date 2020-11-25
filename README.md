@@ -31,7 +31,7 @@ See https://code.visualstudio.com/docs/editor/debugging
 docker-compose rm -f
 docker-compose build --no-cache
 
-# Adding `--build --force-recreate` will used cached.. why above build
+# Adding `--build --force-recreate` will used cached *sometimes*.. why above build
 docker-compose up
 
 # Run when done, cleans up networks etc.
@@ -56,6 +56,8 @@ Server
 
 Somtimes it helps to build, run and inspect containers individually. Docker run crashes? Run without -d, so `docker run --rm -it ...`
 
+TODO: network overlay to add frontend network for Server and Client
+
 ```
 # DB
 cd db
@@ -69,6 +71,14 @@ cd server
 docker build . -t server --no-cache
 docker run -itd --rm --env-file .env -p 3000:3000 --network=backend --name=server server
 docker container exec -it server sh     # try pinging hosts db & client
+
+# CLIENT
+cd client
+docker build . -t client --no-cache
+docker run -itd --rm --env-file .env -p 3001:80 --network=backend --name=client client
+docker container exec -it client sh     # Nginx image has very limited commands, hard to debug
+
+# Note: docker logs -f <container-name>
 ```
 
 #### Test

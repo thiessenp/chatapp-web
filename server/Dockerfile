@@ -11,6 +11,7 @@ RUN npm install --production \
  && npm cache clean --force \
  && mv /app/node_modules /node_modules
 
+# Should this just be COPY . . since workdir set?
 COPY . /app
 
 COPY $RSA_PRIVATE_KEY_FILE .
