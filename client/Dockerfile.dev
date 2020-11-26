@@ -13,6 +13,9 @@ COPY package-lock.json ./
 RUN npm install --silent
 RUN npm install react-scripts -g --silent   # -- Probably not be needed
 
+# Should not need, in package.json devDependencies
+#RUN npm install node-sass
+
 # copy over app
 COPY . ./
 

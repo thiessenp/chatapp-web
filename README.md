@@ -24,14 +24,16 @@ breakpoints in VSCode that are hit when anything hits the Server's line of code.
 Config for VSCode debugger in `.vscode/launch.json`.
 See https://code.visualstudio.com/docs/editor/debugging
 
+Docker installed & running - No? See: //docs.docker.com/get-started/
+
 ```
-# Docker installed & running - No? See: //docs.docker.com/get-started/
+# Remember: 
+# node_modules cached in image, so must re-build on adding new modules
+docker-compose rm -f {OPTIONAL_IMAGE_NAME}
+docker-compose build --no-cache  {OPTIONAL_IMAGE_NAME}
 
-# Important to run after e.g. new node_module, or get cached (no new node_module)
-docker-compose rm -f
-docker-compose build --no-cache
-
-# Adding `--build --force-recreate` will used cached *sometimes*.. why above build
+# Note: adding `--build --force-recreate` will used cached *sometimes*.. 
+# why above manual build, safer IMO.
 docker-compose up
 
 # Run when done, cleans up networks etc.
