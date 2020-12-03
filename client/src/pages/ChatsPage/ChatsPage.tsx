@@ -15,10 +15,11 @@ function ChatsPage() {
         console.log('--health', result);
     }
 
-    // TODO this is wrong read up on it again, for use on after page load
+    // componentDidMount mostly equivalent with the `[]` param
+    // [] means the effect doesn’t use any value that participates in React data flow
     useEffect(() => {
         health();
-    })
+    }, []);
 
     return (
         <section>
