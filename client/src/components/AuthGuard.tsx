@@ -1,9 +1,10 @@
 import {Route, Redirect} from 'react-router-dom';
-import {isAuthenticated} from '../store/authService';
+// import {isAuthenticated} from '../store/accountService';
+import {account} from '../store/accountService';
 
 function RouteGuard({component: Component, /*auth,*/ ...rest}) {
     // TODO wonder if there will be caching issues here?
-    const auth = isAuthenticated();
+    const auth = account.isAuthenticated();
 
     return(
         <Route 

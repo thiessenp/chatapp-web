@@ -1,59 +1,13 @@
 import React, {useEffect} from 'react';
-import {useHistory, useLocation} from 'react-router-dom';
-import {authenticate, isAuthenticated} from '../../store/authService';
-
-
-async function doLogin(username, password) {
-    // const history = createBrowserHistory();
-
-    // TEMP COMMENTS
-    // let formData = new FormData();
-    // formData.append('username', username);
-    // formData.append('password', password);
-    // Note: Do not set the content-type header.
-    // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    //let formData = new FormData(formRef.current.value);
-    // body: formData,
-
-    const response = await fetch(process.env.REACT_APP_API_URL + '/accounts/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({username, password})
-    });
-
-    let result;
-    let errorMessage = 'An error occurred.';
-    try { 
-        result = await response.json();
-
-        // Success
-        if (result && result.idToken) {
-            authenticate({
-                idToken: result.idToken,
-                expiresIn: result.expiresIn
-            });
-
-            return {success: true};
-        }
-
-        // Fail
-        if (result.status === 'error') {
-            errorMessage = result.message;
-        }
-    } catch(e) {
-        // Fail
-        errorMessage = e.message;
-    }
-
-    // Fail
-    return {success: false, message: errorMessage};
-}
+import {useHistory /*,useLocation*/} from 'react-router-dom';
+//import {authenticate, requestPostlogin, requestGetAccount, updateAccount} from '../../store/accountService';
+import {account} from '../../store/accountService';
 
 
 function LoginPage(/*props*/) {
     // Hooks below, must be used in react component
     let history = useHistory();
-    let location = useLocation();   // TODO:
+    //let location = useLocation();   // TODO:
 
     const usernameRef = React.useRef<HTMLInputElement>(null);
     const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -69,7 +23,10 @@ function LoginPage(/*props*/) {
             return;
         }
 
-        const authResult = await doLogin(username.value, password.value);
+        const authResult = await account.login({
+            username: username.value.trim(), 
+            password: password.value.trim()
+        });
 
         if (authResult.success) {
             console.log('forwarding to /chats...')
