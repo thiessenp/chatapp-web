@@ -7,9 +7,9 @@ const {catchAsyncError} = require('../middleware/errorHandler');
 
 const router = new express.Router();
 
-
-router.get('/', isAuthenticated, catchAsyncError(async function(req, res) {
-  const username = req.body.username;
+// TODO: probably a security rist with this, can a user access another users username?
+router.get('/:username', isAuthenticated, catchAsyncError(async function(req, res) {
+  const username = req.params.username; //req.body.username;
   const result = await getAccountByUsername(username);
   const account = {account: result};
   res.status(200).json({data: account});
