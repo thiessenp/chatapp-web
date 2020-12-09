@@ -1,48 +1,71 @@
 import {useEffect, useState} from 'react';
 import {account} from '../../store/accountService';
+import {requestGetHealth} from '../../store/healthService';
+import {requestGetChats, requestGetChat} from '../../store/chatsService';
+import {ChatsList} from '../../components/ChatsList';
+import {Chat} from '../../components/Chat';
+
+// TEMP
+import {Transcript} from '../../components/Transcript';
+import {Roster} from '../../components/Roster';
+
+// NOTE: interesting that const works with hooks - must re-call function on any update
 
 function ChatsPage() {
-    const [temp, setTemp] = useState();
-    // Note: interesting that const works - must re-call function on any update
+    const [health, setHealth] = useState({status: 'UNKNOWN'});
     const [userData, setUserData] = useState({
         id: '',
         username: '',
         idToken: '',
         expiresIn: ''
     }); 
+    let [chats, setChats] = useState<any[]>([]);
 
-    async function health() {
-        const response = await fetch(process.env.REACT_APP_API_URL + '/health');
-        let result;
-        try { 
-            result = await response.json();
-            setTemp(result.status);
-        } catch(e) {
-            console.log('TODO handle fetch serious failure, like JSON or CORS', e);
-        }
-        console.log('--health', result);
-    }
+    //TEMP
+    let [chat, setChat] = useState<any[]>([]);
+    let [transcript, setTranscript] = useState<any[]>([]);
+    let [roster, setRoster] = useState<any[]>([]);
 
-    // async function getAccount() {
-    //     const response = await requestGetAccount();
-    //     console.log('getAccount', response);
-    // }
-
-    // componentDidMount mostly equivalent with the `[]` param
-    // [] means the effect doesn’t use any value that participates in React data flow
     useEffect(() => {
-        health();
-        
-        // const data = account();
-        const data = account.getAccount();
-        setUserData(data);
+        (async () => {
+            setHealth(await requestGetHealth());
+        })();
+
+        const accountData = account.getAccount();
+        setUserData(accountData);
+
+        (async () => {
+            const chatsData = await requestGetChats();
+            setChats(chatsData);
+
+            // TEMP
+            const chatData = await requestGetChat({chatId: chatsData[0].id});
+            setChat(chatData);
+            setTranscript(chatData.transcript);
+            setRoster(chatData.roster);
+        })();
+
+        (async () => {
+
+        })();
 
     }, []);
 
     return (
         <section>
             <h2>ChatsPage TODO</h2>
-            Connection to API: {process.env.REACT_APP_API_URL} is {temp} with account {userData.username}
+            Connection to API: {process.env.REACT_APP_API_URL} is {health.status} with account {userData.username}
+            
+            <ChatsList chats={chats} />
+
+            {/* TODO: WITH SLOTS */}
+            <Chat chat={chat} />
+            <h3>Roster</h3>
+            <Roster roster={roster} />
+            <h3>Transcript</h3>
+            <Transcript transcript={transcript} />
+            {/* END TODO: WITH SLOTS */}
+
         </section>
     )
 }

@@ -1,13 +1,17 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory /*,useLocation*/} from 'react-router-dom';
 //import {authenticate, requestPostlogin, requestGetAccount, updateAccount} from '../../store/accountService';
 import {account} from '../../store/accountService';
+import {requestGetHealth} from '../../store/healthService';
 
+// NOTE: Hooks must be used in react components
 
 function LoginPage(/*props*/) {
-    // Hooks below, must be used in react component
+    const [health, setHealth] = useState({status: 'UNKNOWN'});
     let history = useHistory();
-    //let location = useLocation();   // TODO:
+
+    // TODO:
+    //let location = useLocation();
 
     const usernameRef = React.useRef<HTMLInputElement>(null);
     const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -31,16 +35,12 @@ function LoginPage(/*props*/) {
         if (authResult.success) {
             console.log('forwarding to /chats...')
 
-            // Forwarding Fails:
-            // props.history.push({pathname: '/chats'})
-            // return (<Redirect to='chats' />)
-            // history.push('/chats');
-            // history.push('chats');
-
-            // TODO: then remove above when other stuff works
+            // TODO: 
+            // -- then remove above when other stuff works
             // let { from } = location.state || { from: { pathname: "/" } };
 
-            // TEMP: This works but is not generic
+            // TEMP:
+            // -- This works but is not generic
             let {from} = {from: {pathname: '/chats'}};
 
             history.replace(from);
@@ -49,9 +49,10 @@ function LoginPage(/*props*/) {
         }
     }
 
-    // componentDidMount mostly equivalent with the `[]` param
-    // [] means the effect doesn’t use any value that participates in React data flow
     useEffect(() => {
+        (async () => {
+            setHealth(await requestGetHealth());
+        })();
 
     }, []);
 
@@ -68,9 +69,9 @@ function LoginPage(/*props*/) {
                 <button type="submit">LogIn to Chat</button>
             </form>
 
+            <p>Connection to API: {process.env.REACT_APP_API_URL} is {health.status}</p>
         </section>
     )
 }
-
 
  export default LoginPage;

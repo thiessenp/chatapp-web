@@ -13,12 +13,6 @@
 
  // class Account
 class Account {
-    // token
-    // expiresIn
-    // id
-    // username
-
-    // constructor() {}
 
     getAccount() {
         return {
@@ -79,16 +73,12 @@ class Account {
         return {success: true};
     }
 
+    getAuthHeader() {
+        const idToken =  this.getAccount().idToken;
+        return {'Authorization': `Bearer ${idToken}`};
+    }
+
     async requestPostLogin({username, password}) {
-        // TEMP COMMENTS - fails, just send text in the Body as JSON for form POSTS
-        // let formData = new FormData();
-        // formData.append('username', username);
-        // formData.append('password', password);
-        // Note: Do not set the content-type header.
-        // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        // let formData = new FormData(formRef.current.value);
-        // body: formData,
-    
         const response = await fetch(process.env.REACT_APP_API_URL + '/accounts/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -98,14 +88,10 @@ class Account {
     }
 
     async requestGetAccount({username}) {
-        const idToken =  this.getAccount().idToken;
         const response = await fetch(`${process.env.REACT_APP_API_URL}/accounts/${username}`, {
             headers: {
-                'Authorization': `Bearer ${idToken}`,
-                // 'Content-Type': 'application/x-www-form-urlencoded'
+                ...this.getAuthHeader(),
             }
-            // Cannot send body with Fetch: https://bugs.chromium.org/p/chromium/issues/detail?id=455096
-            // body: 'test'
         });
         return response;
     }
@@ -116,6 +102,10 @@ class Account {
 const account = new Account();
 export {account}
 
+
+
+
+// DEPRECATED
 
 // export async function requestPostlogin({username, password}) {
 //     // TEMP COMMENTS - fails, just send text in the Body as JSON for form POSTS

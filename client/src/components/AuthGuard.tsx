@@ -19,6 +19,9 @@ function RouteGuard({component: Component, /*auth,*/ ...rest}) {
 export default RouteGuard;
 
 
+
+// DEPRECATED
+
 // import React, { useContext, createContext, useState } from "react";
 // import {
 //     BrowserRouter as Router, 
@@ -29,8 +32,6 @@ export default RouteGuard;
 //     useHistory,
 //     useLocation
 //   } from 'react-router-dom';
-
-
 
 // const fakeAuth = {
 //   isAuthenticated: false,
@@ -43,9 +44,6 @@ export default RouteGuard;
 //     setTimeout(cb, 100);
 //   }
 // };
-
-
-
 
 // /** For more details on
 //  * `authContext`, `ProvideAuth`, `useAuth` and `useProvideAuth`
@@ -91,8 +89,6 @@ export default RouteGuard;
 // }
 
 
-
-
 // // A wrapper for <Route> that redirects to the login
 // // screen if you're not yet authenticated.
 // export function PrivateRoute({ children, ...rest }) {
@@ -117,12 +113,3 @@ export default RouteGuard;
 // function useAuth() {
 //   return useContext(authContext);
 // }
-
-
-
-
-
-
-
-
-
