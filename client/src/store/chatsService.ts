@@ -38,3 +38,42 @@ export async function requestGetChat({chatId}) {
         throw new Error('ERROR: requestGetChat serious failure, like JSON or CORS. ' + e.message);
     }
 }
+
+export async function addUserTochat({chatId, accountId}) {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/chats/${chatId}/users`, {
+        method: 'POST',
+        headers: {
+            ...account.getAuthHeader(),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({chatId, accountId})
+    });
+
+    try { 
+        let result = await response.json();
+
+        if (result.status === 'error') {
+            throw new Error(result.message);
+        }
+
+        let user = result.data.user;
+        return user;
+    } catch(e) {
+        // TODO: error handling service?
+        throw new Error(e.message);
+    }
+}
+
+export async function requestPostMessage({chatId, fromChatUserId, toChatUserId, content}) {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/chats/${chatId}/messages`, {
+        method: 'POST',
+        headers: {
+            ...account.getAuthHeader(),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({chatId, fromChatUserId, toChatUserId, content})
+    });
+
+    // TODO:
+    return response;
+}

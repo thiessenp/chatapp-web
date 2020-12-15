@@ -41,7 +41,7 @@ function ChatsPage() {
 
             <Switch>
                 <Route path={`${path}/:chatId`}>
-                    <Chat />
+                    <Chat account={userData} />
                 </Route>
             </Switch>
         </section>
