@@ -122,6 +122,17 @@ function addUserQuery(accountId, chatId) {
       RETURNING id`;
 }
 
+/**
+   * Gets a userId in the chat
+   * @param {UUID} accountId - creator user Id
+   * @param {UUID} chatId - chatId user/roster belongs to
+   * @return {Object} result of query
+   */
+  function getChatUserQuery(accountId, chatId) {
+    return `SELECT id from chat_user WHERE account_id='${accountId}' AND chat_id='${chatId}'`;
+  }
+  
+
 
 module.exports = {
   healthQuery,
@@ -133,4 +144,5 @@ module.exports = {
   createMessageQuery,
   getRosterQuery,
   addUserQuery,
+  getChatUserQuery,
 };

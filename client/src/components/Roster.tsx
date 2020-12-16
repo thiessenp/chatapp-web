@@ -12,7 +12,7 @@ export function Roster(props) {
                 <ol>
                     {props.roster && props.roster.map(user => {
                         return (
-                            <li key={user.id}>id: {user.id}, name: {user.username}</li>
+                            <li key={user.id}>{user.username}</li>
                         )
                     })}
                 </ol>

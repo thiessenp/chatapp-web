@@ -6,7 +6,6 @@ import {requestGetChats} from '../../store/chatsService';
 import {ChatsList} from '../../components/ChatsList';
 import {Chat} from '../../components/Chat';
 
-// NOTE: interesting that const works with hooks - must re-call function on any update
 
 function ChatsPage() {
     const [health, setHealth] = useState({status: 'UNKNOWN'});
@@ -36,12 +35,12 @@ function ChatsPage() {
         <section>
             <h2>ChatsPage TODO</h2>
             <div>Connection to API: {process.env.REACT_APP_API_URL} is {health.status} with account {userData.username}</div>
-            
             <ChatsList chats={chats} />
-
             <Switch>
                 <Route path={`${path}/:chatId`}>
-                    <Chat account={userData} />
+                    {userData.id && <Chat account={userData} />}
+                    
+                    {/* <Chat /> */}
                 </Route>
             </Switch>
         </section>

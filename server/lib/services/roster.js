@@ -1,5 +1,5 @@
 const {sqlEngine} = require('../engines/sqlEngine');
-const {getRosterQuery, addUserQuery} = require('../engines/sqlQueries');
+const {getRosterQuery, addUserQuery, getChatUserQuery} = require('../engines/sqlQueries');
 const {BadRequest} = require('../utils/errors');
 
 
@@ -37,14 +37,21 @@ async function addUserTochat(accountId, chatId) {
   const result = await sqlEngine.queryPromise(addUserQuery(accountId, chatId))
       .then((data) => data)
       .catch((e) => {
-        // User already added error
+        // User already added error - note this so can try getting user
         if (e.code === '23503' || e.code === '23505') {
-          throw new BadRequest('addUserTochat failed. User already added to chat');
+          //throw new BadRequest('addUserTochat failed. User already added to chat');
+          return {error: 'USER_EXISTS'};
         }
-
-        // Generic error
-        throw e;
+        else {
+          // Generic error
+          throw e;
+        }
       });
+
+  // Try to handle this error in the app elsewhere
+  if (result.error === 'USER_EXISTS') {
+    return result;
+  }
 
   if (result.rowCount !== 1) {
     throw new BadRequest('addUserTochat failed. Probably a Client error. Was accountId and chatId correct?');
@@ -53,7 +60,33 @@ async function addUserTochat(accountId, chatId) {
   return result.rows[0];
 }
 
+/**
+ * Gets a user to a chat for use with the roster
+ * @param {UUID} accountId creator user Id
+ * @param {UUID} chatId - Name of chat
+ * @return {Object} Query result on success or error object on fail.
+ */
+async function getChatUser(accountId, chatId) {
+  if (!accountId || !chatId) {
+    throw new BadRequest('getChatUser requires accountId, chatId');
+  }
+
+  const result = await sqlEngine.queryPromise(getChatUserQuery(accountId, chatId))
+    .then((data) => data)
+    .catch((e) => {
+      // Generic error
+      throw e;
+    });
+
+  if (result.rowCount !== 1) {
+    throw new BadRequest('getChatUser failed. Probably a Client error. Was accountId and chatId correct?');
+  }
+
+  return result.rows[0];
+}
+
 module.exports = {
   getRoster,
   addUserTochat,
+  getChatUser
 };

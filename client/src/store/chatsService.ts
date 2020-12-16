@@ -39,7 +39,7 @@ export async function requestGetChat({chatId}) {
     }
 }
 
-export async function addUserTochat({chatId, accountId}) {
+export async function requestAddUserTochat({chatId, accountId}) {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/chats/${chatId}/users`, {
         method: 'POST',
         headers: {

@@ -52,7 +52,14 @@ router.get('/:chat_id', isAuthenticated, catchAsyncError(async function(req, res
 router.post('/:chat_id/users', isAuthenticated, catchAsyncError(async function(req, res) {
   const accountId= req.body.accountId; // uuid
   const chatId = req.params.chat_id; // uuid
-  const result = await rosterService.addUserTochat(accountId, chatId);
+  // Try adding the User to the chat
+  let result = await rosterService.addUserTochat(accountId, chatId);
+
+  // Case of user already added, then try getting that userId
+  if (result.error === 'USER_EXISTS') {
+    result = await rosterService.getChatUser(accountId, chatId);
+  }
+
   const user = {user: result};
   res.status(201).json({data: user});
 }));

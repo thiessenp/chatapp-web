@@ -11,7 +11,7 @@ export function Transcript(props) {
                 {(
                     props.transcript.map(message => {
                         return (
-                            <li key={message.id}>id: {message.id}, content: {message.content}</li>
+                            <li key={message.id}>{message.from_chat_user_username}: {message.content}</li>
                         )
                     })
                 )}

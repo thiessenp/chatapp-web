@@ -97,13 +97,22 @@ CREATE SEQUENCE message_id_sequence INCREMENT 1 START 0 MINVALUE 0 OWNED BY chat
 
 
 ---
---- Create a default initial chat room as a starting point for user to connect to.
+--- Create a default initial chat room as a starting point for user to connect to. (and test room)
 ---
 INSERT INTO chat (name) VALUES ('default');
+INSERT INTO chat (name) VALUES ('test');
 
 ---
 --- Create a default initial admin to do admin things.
 ---
 INSERT INTO account (username, password) VALUES ('admin', 'changeme');
 INSERT INTO account (username, password) VALUES ('test', 'changeme');
-
+INSERT INTO account (username, password) VALUES ('test2', 'changeme');
+INSERT INTO account (username, password) VALUES ('test3', 'changeme');
+INSERT INTO account (username, password) VALUES ('test4', 'changeme');
+INSERT INTO account (username, password) VALUES ('test5', 'changeme');
+INSERT INTO account (username, password) VALUES ('test6', 'changeme');
+INSERT INTO account (username, password) VALUES ('test7', 'changeme');
+INSERT INTO account (username, password) VALUES ('test8', 'changeme');
+INSERT INTO account (username, password) VALUES ('test9', 'changeme');
+INSERT INTO account (username, password) VALUES ('test10', 'changeme');
