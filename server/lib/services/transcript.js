@@ -19,8 +19,12 @@ async function getTranscript(id) {
     throw new BadRequest('getTranscript result Rows was oddly undefined.');
   }
 
+  const sortedResult = result.sort(function(messageA, messageB) {
+    return messageA.message_id - messageB.message_id;
+  });
+
   // Transcript is empty until it has messges, so set a default if none
-  return {data: result.length > 0 ? result : []};
+  return {data: sortedResult.length > 0 ? sortedResult : []};
 }
 
 /**

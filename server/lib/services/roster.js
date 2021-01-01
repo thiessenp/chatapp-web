@@ -19,8 +19,23 @@ async function getRoster(id) {
     throw new BadRequest('getRoster result Rows was oddly undefined.');
   }
 
+  const sortedResult = result.sort(function(userA, userB) {
+    const userAi = userA.username.toLowerCase();
+    const userBi = userB.username.toLowerCase();
+    // A < B
+    if (userAi < userBi) {
+      return -1;
+    }
+    // A > B
+    if (userAi > userBi) {
+      return 1;
+    }
+    // A == B
+    return 0;
+  });
+
   // Roster is empty until it has users, so set a default if none
-  return {data: result.length > 0 ? result : []};
+  return {data: sortedResult.length > 0 ? sortedResult : []};
 }
 
 /**
@@ -39,10 +54,9 @@ async function addUserTochat(accountId, chatId) {
       .catch((e) => {
         // User already added error - note this so can try getting user
         if (e.code === '23503' || e.code === '23505') {
-          //throw new BadRequest('addUserTochat failed. User already added to chat');
+          // throw new BadRequest('addUserTochat failed. User already added to chat');
           return {error: 'USER_EXISTS'};
-        }
-        else {
+        } else {
           // Generic error
           throw e;
         }
@@ -72,11 +86,11 @@ async function getChatUser(accountId, chatId) {
   }
 
   const result = await sqlEngine.queryPromise(getChatUserQuery(accountId, chatId))
-    .then((data) => data)
-    .catch((e) => {
+      .then((data) => data)
+      .catch((e) => {
       // Generic error
-      throw e;
-    });
+        throw e;
+      });
 
   if (result.rowCount !== 1) {
     throw new BadRequest('getChatUser failed. Probably a Client error. Was accountId and chatId correct?');
@@ -88,5 +102,5 @@ async function getChatUser(accountId, chatId) {
 module.exports = {
   getRoster,
   addUserTochat,
-  getChatUser
+  getChatUser,
 };

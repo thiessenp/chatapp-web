@@ -349,19 +349,21 @@
 						{
 							"key": "username",
 							"value": "{{account_username}}",
-							"type": "text"
+							"type": "text",
+							"disabled": true
 						}
 					]
 				},
 				"url": {
-					"raw": "{{HOST}}:{{PORT}}/api/accounts",
+					"raw": "{{HOST}}:{{PORT}}/api/accounts/{{account_username}}",
 					"host": [
 						"{{HOST}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"accounts"
+						"accounts",
+						"{{account_username}}"
 					]
 				}
 			},
@@ -862,8 +864,9 @@
 					"urlencoded": [
 						{
 							"key": "accountId",
-							"value": "{{account_id}}",
-							"type": "text"
+							"value": "",
+							"type": "text",
+							"disabled": true
 						}
 					]
 				},
