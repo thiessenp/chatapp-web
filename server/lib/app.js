@@ -27,9 +27,10 @@ const CORS_CONFIG = {
   'origin': config.CLIENT_HOST,
   'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
   'preflightContinue': false,
-  'optionsSuccessStatus': 204
+  'optionsSuccessStatus': 204,
 };
-app.use(cors({origin: config.CLIENT_HOST}));
+// app.use(cors({origin: config.CLIENT_HOST}));
+app.use(cors(CORS_CONFIG));
 
 // TODO what todo with this? Verify not send in prod or should it?
 // For: automated logging of requests, responses and related data
