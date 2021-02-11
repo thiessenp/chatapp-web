@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {requestGetChat} from '../store/chatsService';
+import {requestGetChat} from '../services/chatsService';
 import {Transcript} from './Transcript';
 import {Roster} from './Roster';
 import {Composer} from './Composer';
-import {requestPostMessage, requestAddUserTochat} from '../store/chatsService';
+import {requestPostMessage, requestAddUserTochat} from '../services/chatsService';
 
 
 // NOTE: props receives an account

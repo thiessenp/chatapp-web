@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory /*,useLocation*/} from 'react-router-dom';
 //import {authenticate, requestPostlogin, requestGetAccount, updateAccount} from '../../store/accountService';
-import {account} from '../../store/accountService';
-import {requestGetHealth} from '../../store/healthService';
+import {account} from '../../services/accountService';
+import {requestGetHealth} from '../../services/healthService';
 
 // NOTE: Hooks must be used in react components
 

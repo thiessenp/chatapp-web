@@ -1,30 +1,35 @@
 import {ListNav} from 'keynav-web';
-import {useRef, useEffect} from 'react';
+import {useState, useRef, useEffect} from 'react';
 
 
 export function Transcript(props) {
+    const [initialized, setInitialized] = useState<boolean>(false);
+    const [listNav, setListNav] = useState<any>({});
+    
     const transcriptRef = useRef<HTMLOListElement>(null);
- 
-    // let listNav;
-    // console.log('props.transcript', props.transcript)
-    // console.log('transcriptRef', transcriptRef, transcriptRef.current && transcriptRef.current.children.length);
 
     useEffect(() => {
-        // TODO:
-        // - Check if this is a good way to add/rem behavior on dynamic lists?
-        if (transcriptRef.current && transcriptRef.current.children.length) {
-            const listNav = new ListNav({
-                listEl: transcriptRef.current,
-                listItemsSelector: 'li'
-            });
-            console.log('add behavior', listNav, transcriptRef.current.children.length);
-
-            return () => {
-                console.log('rem behavior')
-                listNav.removeBehavior();
+        return () => {
+            // NOT WORKING - but works when add a break point?
+            console.log('listNav.removeBehavior', listNav.removeBehavior);
+            if (listNav.removeBehavior) {
+                // listNav.removeBehavior();
+                console.log('(to test) did it listNav.removeBehavior', listNav.removeBehavior);
             }
         }
-    }, [props]);
+    }, []);
+
+    useEffect(() => {
+        // Add keynav to Transcript once loaded (once!)
+        if ((props.transcript.length > 0) && initialized === false) {
+            setListNav(new ListNav({
+                listEl: transcriptRef.current,
+                listItemsSelector: 'li'
+            }));
+            setInitialized(true);
+            console.log('initialized=', initialized);
+        }
+    }, [props.transcript, initialized]);
 
     return (
         <section>
@@ -44,7 +49,22 @@ export function Transcript(props) {
                 )}
                 </ol>
             )}
-
         </section>
     )
 }
+
+/**
+Could do styles like this
+const styles = {
+  count: css`
+    font-size: 12px;
+  `,
+  lastUpdated: css`
+    color: #666;
+    font-size: 10px;
+  `,
+  todos: css`
+    padding-left: 0;
+  `,
+};
+ */

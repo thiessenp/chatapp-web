@@ -73,6 +73,8 @@ class Account {
         return {success: true};
     }
 
+    // returns authorization header with jwt token
+    // Note: consider moving into a helper with other helpers somewhere?
     getAuthHeader() {
         const idToken =  this.getAccount().idToken;
         return {'Authorization': `Bearer ${idToken}`};

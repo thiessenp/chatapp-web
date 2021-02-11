@@ -1,3 +1,6 @@
+// TODO
+// consider, should a service return data or more likely the promise called?
+
 import {account} from './accountService';
 
 export interface Chat {
@@ -14,6 +17,8 @@ export async function requestGetChats() {
     });
 
     try { 
+        // throw new Error('ERROR: requestGetChats serious failure, like JSON or CORS');
+
         let result = await response.json();
         let chats = result.data.chats;
         return chats;
