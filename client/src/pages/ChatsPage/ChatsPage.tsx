@@ -8,10 +8,12 @@ import {requestGetChats} from '../../services/chatsService';
 import {ChatsList} from '../../components/ChatsList';
 import {Chat} from '../../components/Chat';
 
-import {getChatsAction} from '../../store/chatsActions';
+import {getChatListAction} from '../../store/chatsActions';
 
 
 function ChatsPage() {
+    const dispatch = useDispatch();
+    const chatListData = useSelector(state => state.chats);
     const [health, setHealth] = useState({status: 'UNKNOWN'});
     let [userData, setUserData] = useState({
         id: '',
@@ -19,15 +21,8 @@ function ChatsPage() {
         idToken: '',
         expiresIn: ''
     }); 
-
-    let [chats, setChats] = useState<any[]>([]);
-    const chatsData = useSelector(state => state.chats);
-
     let {path} = useRouteMatch();
 
-
-    const dispatch = useDispatch();
-    
 
     // >>>>>>>>TESTS
     const testData = useSelector(state => state.test);
@@ -38,19 +33,6 @@ function ChatsPage() {
     // >>>>>>>>END TESTS
 
 
-
-
-
-    // const chatsData = useSelector(state => state.chats);
-    // useEffect(() => { 
-    //     dispatch(getChatsAction())
-    //     console.log('chatData=', chatData)
-    // }, []);
-
-
-
-
-
     useEffect(() => {
         const accountData = account.getAccount();
         setUserData(accountData);
@@ -59,15 +41,7 @@ function ChatsPage() {
             const healthData = await requestGetHealth()
             setHealth(healthData);
 
-            // try {
-            //     const chatsData = await requestGetChats();
-            //     setChats(chatsData);
-            // } catch(e) {
-            //     console.log(e);
-            // }
-
-            dispatch(getChatsAction())
-            console.log('chatsData=', chatsData)
+            dispatch(getChatListAction());
         })();
     }, []);
 
@@ -79,7 +53,7 @@ function ChatsPage() {
             <div>Connection to API: {process.env.REACT_APP_API_URL} is {health.status} with account {userData.username}</div>
             
             {/* <ChatsList chats={chats} /> */}
-            <ChatsList chats={chatsData} />
+            <ChatsList chats={chatListData} />
             
             <Switch>
                 <Route path={`${path}/:chatId`}>

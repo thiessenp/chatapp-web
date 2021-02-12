@@ -7,7 +7,7 @@ import {testReducer, chatsReducer} from './chatsReducer';
 
 const rootReducer = combineReducers({
     test: testReducer,
-    chats: chatsReducer
+    chats: chatsReducer,
 });
 
 // TODO - want a logger - so verbose!

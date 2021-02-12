@@ -1,6 +1,6 @@
 
-import { disconnect } from 'process';
-import {requestGetChats} from '../services/chatsService';
+import {requestGetChats, requestGetChat} from '../services/chatsService';
+
 
 // >>>>>>>>TESTS
 // Note: could put Constants in a separate file, and or grouped into objects
@@ -13,17 +13,14 @@ export const testAction = (test) => ({
 // >>>>>>>>END TESTS
 
 
-export const GET_CHATS_REQUEST = 'GET_CHATS_REQUEST';
-export const GET_CHATS_SUCCESS = 'GET_CHATS_SUCCESS';
-export const GET_CHATS_FAILURE = 'GET_CHATS_FAILURE';
-
-// export const chatsActions = {
-//     getChatsAction
-// };
+// Note: could group into an object also
+export const GET_CHAT_LIST_REQUEST = 'GET_CHAT_LIST_REQUEST';
+export const GET_CHAT_LIST_SUCCESS = 'GET_CHAT_LIST_SUCCESS';
+export const GET_CHAT_LIST_FAILURE = 'GET_CHAT_LIST_FAILURE';
 
 // Note: function pattern taken from (but modified :)
 // https://github.com/cornflourblue/react-hooks-redux-registration-login-example/blob/master/src/_actions/user.actions.js
-export function getChatsAction() {
+export function getChatListAction() {
     // Note: assuming arrow func is to closure this scope for, hmm something
     return async (dispatch) => {
         // Notify starting the http request
@@ -38,9 +35,33 @@ export function getChatsAction() {
         }
     };
 
-    function request() { return {type: GET_CHATS_REQUEST, payload: {}} }
-    function success(chats) { return {type: GET_CHATS_SUCCESS, payload: chats} }
-    function failure(error) { return {type: GET_CHATS_FAILURE, payload: error} }
+    function request() { return {type: GET_CHAT_LIST_REQUEST, payload: {}} }
+    function success(chats) { return {type: GET_CHAT_LIST_SUCCESS, payload: chats} }
+    function failure(error) { return {type: GET_CHAT_LIST_FAILURE, payload: error} }
 }
 
-// Can put combined above + dispatch in a function below, at least for complex
+export const GET_CHAT_REQUEST = 'GET_CHAT_REQUEST';
+export const GET_CHAT_SUCCESS = 'GET_CHAT_SUCCESS';
+export const GET_CHAT_FAILURE = 'GET_CHAT_FAILURE';
+
+export function getChatAction({chatId}) {
+    return async (dispatch) => {
+        dispatch(request());
+
+        try {
+            const chat = await requestGetChat({chatId});
+            dispatch(success(chat));
+        } catch(e) {
+            dispatch(failure(e));
+        }
+    };
+
+    function request() { return {type: GET_CHAT_REQUEST, payload: {}} }
+    function success(chat) { return {type: GET_CHAT_SUCCESS, payload: chat} }
+    function failure(error) { return {type: GET_CHAT_FAILURE, payload: error} }
+}
+
+// >>>>>>>>>>>>>>>>>>>>
+// TODO:
+// write out how to build chat DS and update it
+// >>>>>>>>>>>>>>>>>>>>
