@@ -1,10 +1,14 @@
+// TODO: side effects from functions, instead return var (avoid side effects)
+
 import {
-    GET_CHAT_LIST_REQUEST,
-    GET_CHAT_LIST_SUCCESS,
-    GET_CHAT_LIST_FAILURE,
+    GET_CHATS_REQUEST,
+    GET_CHATS_SUCCESS,
+    GET_CHATS_FAILURE,
     GET_CHAT_REQUEST,
     GET_CHAT_SUCCESS,
-    GET_CHAT_FAILURE
+    GET_CHAT_FAILURE,
+    START_CHAT_POLLING,
+    STOP_CHAT_POLLING
 } from './chatsActions';
 
 
@@ -37,85 +41,79 @@ export interface IChat {
     transcript: []
 }
 
-
 const INITIAL_STATE = [];
 
 export function chatsReducer(state=INITIAL_STATE, action) {
     switch(action.type) {
  
-        // CHAT_LIST
-        case GET_CHAT_LIST_REQUEST:
+        // CHATS
+        case GET_CHATS_REQUEST:
             return state;
-        case GET_CHAT_LIST_SUCCESS:
-            return updateChatList({oldChats: state, newChats: action.payload});
-        case GET_CHAT_LIST_FAILURE:
-            console.log(GET_CHAT_LIST_FAILURE, action.payload);
+        case GET_CHATS_SUCCESS:
+            return updateChats({oldChats: state, newChats: action.payload});
+        case GET_CHATS_FAILURE:
             // TODO:
             return state;
  
         // CHAT
         case GET_CHAT_REQUEST:
-            console.log(GET_CHAT_REQUEST, action.payload);
             return state;
-        case GET_CHAT_SUCCESS:
-            console.log(GET_CHAT_SUCCESS, action.payload);
-
-
-
-            const newChat = updateChat({chats: state, newChat: action.payload});
-            console.log('newChat', newChat);
-            return {
-                // TODO - comparison by notifying add/remove chat in list?
-                // ...state,
-                ...action.payload
-            };
+        case GET_CHAT_SUCCESS: {
+            const newChat:IChat = action.payload;
+            const newChatState = state.map((chat:IChat) => {
+                if (chat.id !== newChat.id) { return chat; }
+                if (!isChatDiff({oldChat:chat, newChat})) { return chat}
+                return newChat;
+            });
+            return newChatState;
+        }
         case GET_CHAT_FAILURE:
-            console.log(GET_CHAT_FAILURE, action.payload);
+            console.log(GET_CHAT_FAILURE, action);
+            // TODO:
             return state;
  
+        // POLLING CHAT
+        case START_CHAT_POLLING:
+            console.log(START_CHAT_POLLING, action);
+            return state;
+        case STOP_CHAT_POLLING:
+            console.log(STOP_CHAT_POLLING, action);
+            return state;
+
         default:
             return state;
     }
 }
 
 /**
- * Updates the existing chatList, only add or remove chats NEVER override since
- * the chatList stores chat data.
+ * Updates chats by over writing all chats if there is a different number of
+ * chats. (chats have been added/removed so update)
  * 
- * TODO:
- * - diff to remove a chat
+ * TODO: could compare transcript/roster for changes per chat for update diff.
  */
-function updateChatList({oldChats, newChats}) {
+function updateChats({oldChats, newChats}) {
     // New session? add any new chats
-    if (oldChats.length === 0) {
-        return newChats;
-    }
+    if (oldChats.length === 0) { return newChats; }
 
     // No new chats
-    if (oldChats.length === newChats.length) {
-        return oldChats;
-    }
+    if (oldChats.length === newChats.length) { return oldChats; }
 
-    // Diff the array lengths for new chats
-    const diffLength = oldChats.length - newChats.length;
-    if (diffLength <= 0) {
-        return oldChats;
-    }
-
-    // Add new chats to existing chants
-    return [
-        ...oldChats,
-        ...newChats.splice(diffLength)
-    ];
+    // New chats so update *everything* (yeeehaw)
+    return newChats;
 }
 
 
-function updateChat({chats, newChat}) {
-    console.log('chats', chats, 'newChat', newChat);
+function isChatDiff({oldChat, newChat}) {
+    if (!oldChat || !newChat) { return false; }
 
-    for (let i=0, l=chats.length; i < l; i++) {
-        if (newChat.id === chats[i].id) {
-            return chats[i];
-        }
+    // Diff the Chat
+    if (
+        (oldChat.transcript.length !== newChat.transcript.legnth) || 
+        (oldChat.roster.length !== newChat.roster.length)
+    ) {
+        return true;
     }
+
+    // No diff in chat
+    return false;
 }

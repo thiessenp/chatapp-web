@@ -10,7 +10,7 @@ export interface Chat {
 
 
 export async function requestGetChats() {
-    const response = await fetch(process.env.REACT_APP_API_URL + '/chats', {
+    const response = await fetch(process.env.REACT_APP_API_URL + '/chats?isAllData=true', {
         headers: {
             ...account.getAuthHeader(),
         }

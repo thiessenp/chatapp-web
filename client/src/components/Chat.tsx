@@ -1,24 +1,33 @@
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+
 import {requestGetChat} from '../services/chatsService';
 import {Transcript} from './Transcript';
 import {Roster} from './Roster';
 import {Composer} from './Composer';
 import {requestPostMessage, requestAddUserTochat} from '../services/chatsService';
 
+import {/*getChatAction,*/ startChatPolling, stopChatPolling} from '../store/chatsActions';
 
-// NOTE: props receives an account
+
+// NOTE: props receives an account - to join the chat
+// NOTE: chatId from PATH
+// NOTE: receives chats but can ALSO use a reducer
 export function Chat(props) {
-    let [chat, setChat] = useState<any>({});
-    let [chatUser, setChatUser] = useState<any>({});
-    let [transcript, setTranscript] = useState<any[]>([]);
-    let [roster, setRoster] = useState<any[]>([]);
     let {chatId} = useParams();
 
-    let polling = {
-        isStopped: false,
-        delay: 2000
-    };
+    // User info so can send a message - I think?
+    let [chatUser, setChatUser] = useState<any>({});
+
+    const dispatch = useDispatch();
+
+    const chat = useSelector(state => {
+        const chat = state.chats.filter(chat => chat.id === chatId);
+        if (!chat || !chat[0]) { return state; }
+        return chat[0];
+    });
+
 
     // CAREFUL: infinite loops below if change - TODO readmore about hook lifecycle
     useEffect(() => {
@@ -27,10 +36,14 @@ export function Chat(props) {
                 addUser();
             // }
 
-            updateChat();
         })();
-    // });
     }, [chatId]);
+
+    useEffect(() => {
+        console.log('new chatId', chatId)
+        dispatch(startChatPolling({chatId}));
+        return () => { dispatch(stopChatPolling({chatId})); }
+    }, [chatId])
 
     async function addUser() {
         try {
@@ -39,18 +52,6 @@ export function Chat(props) {
                 accountId: props.account.id
             });
             setChatUser({id: chatUserData.id});
-        } catch(e) {
-             // TODO: error handling service?
-            console.log('--ERROR', e.message);
-        }
-    }
-
-    async function updateChat() {
-        try {
-            const chatData = await requestGetChat({chatId});
-            setChat(chatData);
-            setTranscript(chatData.transcript);
-            setRoster(chatData.roster);
         } catch(e) {
              // TODO: error handling service?
             console.log('--ERROR', e.message);
@@ -70,33 +71,16 @@ export function Chat(props) {
         console.log('requestPostMessage response=', response);
     }
 
-    // TODO: TEMP:
-    // TODO: maybe some kind of backoff logic?
-    // NOTE: Tried to move to a seperate file in a Service but difficult to tie into redux
-    function startPolling() {
-        if (polling.isStopped) return;
-
-        setTimeout(() => {
-            updateChat();
-            startPolling();
-        }, polling.delay);
-    }
-
-    // TODO: Not working...updates here but not in startPolling, closured...
-    // function stopPolling() {
-    //     polling.isStopped = true;
-    // }
-
     return (
         <section>
-            <h3>Chat: {chat && chat.name} 
-                <button onClick={updateChat}>update</button> 
-                <button onClick={startPolling}>start polling</button>
-            </h3>
+            <h3>Chat: {chat && chat.name}</h3>
 
-            <Roster roster={roster} />
-
-            <Transcript transcript={transcript} />
+           { chat && chat.transcript && chat.roster &&
+                <>
+                    <Roster roster={chat.roster} />
+                    <Transcript transcript={chat.transcript} />
+                </>
+            }
 
             <Composer sendMessage={sendMessage} />
         </section>
