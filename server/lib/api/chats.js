@@ -24,26 +24,26 @@ router.post('/', isAuthenticated, catchAsyncError(async function(req, res) {
 
 // Gets all chats
 router.get('/', isAuthenticated, catchAsyncError(async function(req, res) {
-  const result = await chatService.getChats();
-  const chats = {chats: result};
+  // Get chat list data (id and name)
+  let result = await chatService.getChats();
+
+  // Option to get all chat data (basically overrides each item with full chat)
+  const isAllData = Boolean(req.query.isAllData);
+  if (isAllData) {
+    result = result.map(async (chat) => {
+      const chatAllData = await getChatAllData(chat.id);
+      return {...chatAllData.chat};
+    });
+  }
+
+  const chats = {chats: await Promise.all(result)}; //Wow!
   res.status(200).json({data: chats});
 }));
 
 // Gets a chat + transcript + roster
 router.get('/:chat_id', isAuthenticated, catchAsyncError(async function(req, res) {
   const chatId = req.params.chat_id;
-  const cResult = await chatService.getChat(chatId);
-  const tResult = await transcriptService.getTranscript(chatId);
-  const rResult = await rosterService.getRoster(chatId);
-
-  // Gather all Chat data in an object
-  const chat = {
-    chat: {
-      ...cResult.data,
-      transcript: tResult.data,
-      roster: rResult.data,
-    },
-  };
+  const chat = await getChatAllData(chatId);
   res.status(200).json({data: chat});
 }));
 
@@ -75,5 +75,27 @@ router.post('/:chat_id/messages', isAuthenticated, catchAsyncError(async functio
   res.status(201).json({data: message});
 }));
 
+
+/**
+ * Gets the complete Chat data including transcript and roster.
+ * @param {string} chatId - id of chat to get
+ * @returns {Object} chat data 
+ */
+async function getChatAllData(chatId) {
+  const cResult = await chatService.getChat(chatId);
+  const tResult = await transcriptService.getTranscript(chatId);
+  const rResult = await rosterService.getRoster(chatId);
+
+  // Gather all Chat data in an object
+  const chat = {
+      chat: {
+        ...cResult.data,
+        transcript: tResult.data,
+        roster: rResult.data,
+      },
+  };
+
+  return chat;
+}
 
 module.exports = router;

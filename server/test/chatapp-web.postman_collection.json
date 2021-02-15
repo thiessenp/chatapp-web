@@ -11,7 +11,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b781c2a3-d38c-45a1-b458-1384d9ede113",
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
 							"\r",
@@ -38,7 +37,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "c246b36f-c795-4669-b595-20903972af99",
 						"exec": [
 							"// Runs before Request sent\r",
 							"\r",
@@ -73,7 +71,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "c1395c45-1f49-4833-b58d-82a4cd6015eb",
 						"exec": [
 							"// Token set from login in global var, global var used in Authorization part\r",
 							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
@@ -127,7 +124,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a0c8e50f-5b58-4409-ba83-5d617ffe522a",
 						"exec": [
 							"tests[\"Status code is 404\"] = responseCode.code === 404;\r",
 							"\r",
@@ -142,7 +138,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "549f84bd-7754-4837-af65-e3179859e181",
 						"exec": [
 							""
 						],
@@ -173,7 +168,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "66505fc2-cf3e-48c7-92e3-24efc31db633",
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
 							"\r",
@@ -213,10 +207,7 @@
 							"value": "changeme",
 							"type": "text"
 						}
-					],
-					"options": {
-						"urlencoded": {}
-					}
+					]
 				},
 				"url": {
 					"raw": "{{HOST}}:{{PORT}}/api/accounts/login",
@@ -239,7 +230,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "9f673c19-873c-4b90-bfd6-c218d99d72b0",
 						"exec": [
 							"// Login should fail with bad password\r",
 							"tests[\"Status code is 401\"] = responseCode.code === 401;\r",
@@ -272,10 +262,7 @@
 							"value": "BADPASSWORD",
 							"type": "text"
 						}
-					],
-					"options": {
-						"urlencoded": {}
-					}
+					]
 				},
 				"url": {
 					"raw": "{{HOST}}:{{PORT}}/api/accounts/login",
@@ -298,7 +285,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "135754ac-0618-4b6e-85b0-7f2ce95d9a9d",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -375,7 +361,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a7d4ec51-dd40-48c1-84c5-da82fd47c684",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -441,7 +426,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a71e233a-d2db-479d-bb2f-44b1859125b8",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -507,7 +491,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "0dfe0dc6-dc0c-43f8-b0c0-0c5f608115ad",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -561,7 +544,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a3b25c5d-f01f-453a-89eb-5213547e6361",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -625,12 +607,85 @@
 			"response": []
 		},
 		{
+			"name": "localhost:3000/api/chats?isAllData=true",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Note: Token set from login in global var, global var used in Authorization part\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"// Get chats, should be at least 2\r",
+							"jsonData = JSON.parse(responseBody);\r",
+							"chats = jsonData.data.chats;\r",
+							"tests[\"Two chats created\"] = chats.length >= 2;\r",
+							"\r",
+							"// Set Two Chat IDs and Names to use in future tests\r",
+							"postman.setGlobalVariable(\"chat_id1\", chats[0].id);\r",
+							"postman.setGlobalVariable(\"chat_name1\", chats[0].name);\r",
+							"postman.setGlobalVariable(\"chat_id2\", chats[1].id);\r",
+							"postman.setGlobalVariable(\"chat_name2\", chats[1].name);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDM5MjI4NjIsImV4cCI6MTYwMzkzMDA2Miwic3ViIjoiNzRiODA4MTUtMzk0My00NDUzLWJlNWItY2RiMmJjZjRmNjVjIn0.dmEg_ukCzWTWn-my0Pvpn4HydV_RL33kBp6DkGZRhiaQSaHiWTty9TJl6a4327KyS_e87QNJem6HmxHKULbaPtQMgfzHr5SP8lA3FmVkUbLkqWNMTiw-ayi-cuQ9WySuyTVBu-JQ8bmMz39KRu6aAEu0Btxjn94ukvJa3IJTZ3s",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/api/chats?isAllData=true",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chats"
+					],
+					"query": [
+						{
+							"key": "isAllData",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:3000/api/chats/\"1\"",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "f99822e6-d036-49f7-a4fd-5fd14374a37a",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -699,7 +754,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b12a7e3a-6371-41fd-9992-93e62a3a44b1",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -767,7 +821,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "9b031fa9-383f-4ce2-b25b-933341d12608",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -833,7 +886,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6533add1-e634-4ad9-88f2-1648d4ebc80b",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -892,7 +944,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1a5a9c56-ed27-4083-96b7-a7538ecdcafb",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -957,7 +1008,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "4da5e3d5-7550-4df3-bf68-3705c5c6321c",
 						"exec": [
 							"// Note: Token set from login in global var, global var used in Authorization part\r",
 							"\r",
@@ -1017,6 +1067,5 @@
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
