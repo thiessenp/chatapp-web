@@ -2,13 +2,11 @@ import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {requestGetChat} from '../services/chatsService';
+import {requestPostMessage, requestAddUserTochat, Poll} from '../services/chatsService';
+import {getChatAction} from '../store/chatsActions';
 import {Transcript} from './Transcript';
 import {Roster} from './Roster';
 import {Composer} from './Composer';
-import {requestPostMessage, requestAddUserTochat} from '../services/chatsService';
-
-import {/*getChatAction,*/ startChatPolling, stopChatPolling} from '../store/chatsActions';
 
 
 // NOTE: props receives an account - to join the chat
@@ -40,9 +38,9 @@ export function Chat(props) {
     }, [chatId]);
 
     useEffect(() => {
-        console.log('new chatId', chatId)
-        dispatch(startChatPolling({chatId}));
-        return () => { dispatch(stopChatPolling({chatId})); }
+        const callback:any = () => { return dispatch(getChatAction({chatId})); }
+        const poll = new Poll({callback});
+        return () => { poll.stop(); }
     }, [chatId])
 
     async function addUser() {
@@ -65,10 +63,7 @@ export function Chat(props) {
             toChatUserId: chatUser.id,
             content
         };
-
-        console.log('sendMessage, message=', message);
         const response = await requestPostMessage(message);
-        console.log('requestPostMessage response=', response);
     }
 
     return (

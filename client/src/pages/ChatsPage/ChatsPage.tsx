@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {account} from '../../services/accountService';
 import {requestGetHealth} from '../../services/healthService';
-// import {requestGetChats} from '../../services/chatsService';
+import {Poll} from '../../services/chatsService';
 import {ChatsList} from '../../components/ChatsList';
 import {Chat} from '../../components/Chat';
 
@@ -27,16 +27,6 @@ function ChatsPage() {
     }); 
 
 
-
-    // >>>>>>>>TESTS
-    // const testData = useSelector(state => state.test);
-    // // test it once
-    // useEffect(() => { 
-    //   setTimeout(()=>{dispatch({type: 'TEST', payload: {data: 'ChatsPage dispatch'} })}, 2000);
-    // }, []);
-    // >>>>>>>>END TESTS
-
-
     // Bootstrap with Account Data, then get initial Chats data
     useEffect(() => {
         const accountData = account.getAccount();
@@ -45,11 +35,19 @@ function ChatsPage() {
         (async () => {
             const healthData = await requestGetHealth()
             setHealth(healthData);
-
-            dispatch(getChatsAction());
-
-            // NOTE - POLLING done per chat so NOT HERE
         })();
+
+        let poll;
+        (async () => {
+            // Get initial all Chat data
+            dispatch(getChatsAction({isAllData:true}));
+
+            // Poll just for Chat list updates (let each Chat handle their full updates)
+            const callback:any = () => { return dispatch(getChatsAction({isAllData:false})); }
+            poll = new Poll({callback});
+        })();
+
+        return () => { console.log('stop'); poll.stop(); }
     }, []);
 
     return (

@@ -6,9 +6,7 @@ import {
     GET_CHATS_FAILURE,
     GET_CHAT_REQUEST,
     GET_CHAT_SUCCESS,
-    GET_CHAT_FAILURE,
-    START_CHAT_POLLING,
-    STOP_CHAT_POLLING
+    GET_CHAT_FAILURE
 } from './chatsActions';
 
 
@@ -71,19 +69,22 @@ export function chatsReducer(state=INITIAL_STATE, action) {
             console.log(GET_CHAT_FAILURE, action);
             // TODO:
             return state;
- 
-        // POLLING CHAT
-        case START_CHAT_POLLING:
-            console.log(START_CHAT_POLLING, action);
-            return state;
-        case STOP_CHAT_POLLING:
-            console.log(STOP_CHAT_POLLING, action);
-            return state;
 
         default:
             return state;
     }
 }
+
+
+/**
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+START:
+
+bug, add a new chat (postman), it adds fine but state seems messed up on Chat page
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ */
 
 /**
  * Updates chats by over writing all chats if there is a different number of
@@ -98,8 +99,21 @@ function updateChats({oldChats, newChats}) {
     // No new chats
     if (oldChats.length === newChats.length) { return oldChats; }
 
-    // New chats so update *everything* (yeeehaw)
-    return newChats;
+    // Add any new Chats
+    // NOTE: array.filter wasn't working for me so went with foreach (try later?)
+    let newChatsDiff: Array<any> = [];
+    newChats.forEach(newChat => {
+        let notFound = true;
+        oldChats.forEach(oldChat => {
+            if (newChat.id === oldChat.id) { notFound = false; }
+        });
+        if (notFound) { newChatsDiff.push(newChat); }
+    });
+
+    // TODO:
+    // Remove any removed Chats (server API as well)
+
+    return [...oldChats, ...newChatsDiff];
 }
 
 

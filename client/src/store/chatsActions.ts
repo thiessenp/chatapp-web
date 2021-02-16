@@ -21,17 +21,16 @@ export const GET_CHATS_FAILURE = 'GET_CHATS_FAILURE';
 
 // Note: function pattern taken from (but modified :)
 // https://github.com/cornflourblue/react-hooks-redux-registration-login-example/blob/master/src/_actions/user.actions.js
-export function getChatsAction() {
+export function getChatsAction({isAllData}) {
     // Note: assuming arrow func is to closure this scope for, hmm something
     return async (dispatch) => {
         // Notify starting the http request
         dispatch(request());
 
         try {
-            const chats = await requestGetChats();
+            const chats = await requestGetChats({isAllData});
             dispatch(success(chats));
         } catch(e) {
-            console.log(1, e)
             dispatch(failure(e));
         }
     };
@@ -50,6 +49,7 @@ export function getChatAction({chatId}) {
         dispatch(request());
 
         try {
+            console.log(1)
             const chat = await requestGetChat({chatId});
             dispatch(success(chat));
         } catch(e) {
@@ -62,43 +62,3 @@ export function getChatAction({chatId}) {
     function failure(error) { return {type: GET_CHAT_FAILURE, payload: error} }
 }
 
-
-export const START_CHAT_POLLING = 'START_CHAT_POLLING';
-
-const pollingData = {};
-const pollingDelay = 2000; // ms
-
-export function startChatPolling({chatId}) {
-
-    return async (dispatch) => {
-        if (!pollingData[chatId]) {
-            pollingData[chatId] = { isPolling: true }
-        }
-    
-        (function doPolling() {
-            if (!pollingData[chatId].isPolling) { return; }
-
-            setTimeout(() => {
-                dispatch(getChatAction({chatId}));
-                doPolling();
-            }, pollingDelay);
-        })();
-
-        dispatch(success(chatId));
-    };
-
-    function success(chatId){ return {type: START_CHAT_POLLING, payload: chatId}};
-}
-
-
-export const STOP_CHAT_POLLING = 'STOP_CHAT_POLLING';
-
-export function stopChatPolling({chatId}) {
-    pollingData[chatId] = { isPolling: false }
-
-    return async (dispatch) => {
-        dispatch(success(chatId));
-    };
-
-    function success(chatId){ return {type: STOP_CHAT_POLLING, payload: chatId}};
-}

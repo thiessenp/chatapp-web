@@ -9,8 +9,9 @@ export interface Chat {
 }
 
 
-export async function requestGetChats() {
-    const response = await fetch(process.env.REACT_APP_API_URL + '/chats?isAllData=true', {
+export async function requestGetChats({isAllData=false}) {
+    const url = process.env.REACT_APP_API_URL + '/chats' + (isAllData ? '?isAllData=true' : '');
+    const response = await fetch(url, {
         headers: {
             ...account.getAuthHeader(),
         }
@@ -81,4 +82,51 @@ export async function requestPostMessage({chatId, fromChatUserId, toChatUserId, 
 
     // TODO:
     return response;
+}
+
+
+/**
+ * TODO: move to a util class?
+ * 
+ * e.g. use:
+ *     useEffect(() => {
+        const callback:any = () => { return dispatch(getChatAction({chatId})); }
+        const poll = new Poll({callback});
+        return () => { poll.stop(); }
+    }, [chatId])
+ */
+export class Poll {
+    isPolling:boolean = false;
+    delay:number = 2000;
+    callback:Function;
+
+    constructor({callback, delay=2000, isAutoStart=true}) {
+        if (!callback) { 
+            throw Error('Poll requires a callback'); 
+        }
+        this.callback = callback;
+
+        if (delay) { this.delay = delay; }
+
+        if (isAutoStart) { this.start(); }
+    }
+
+    start() {
+        this.isPolling = true;
+        this.doPoll();
+    }
+
+    stop() {
+        this.isPolling = false;
+    }
+
+    doPoll() {
+        if (!this.isPolling) { return; }
+
+        setTimeout(() => {
+            if (!this.isPolling) { return; }
+            this.callback();
+            this.doPoll();
+        }, this.delay);
+    }
 }
