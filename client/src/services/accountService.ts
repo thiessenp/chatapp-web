@@ -1,3 +1,74 @@
+import {IAccount} from '../store/accountReducer';
+
+
+// TODO: security issue with API allowing account lookups of not "my" username?
+export async function login({username, password}) {
+    // Login - holds idToken and expiresIn
+    const responseLogin = await requestPostLogin({username, password});
+    const resultLogin = await responseLogin.json();
+    if (resultLogin.status === 'error') {
+        throw new Error(resultLogin.message)
+    }
+
+    // Get account - holds id and username 
+    const responseAccount = await requestGetAccount({username, idToken: resultLogin.idToken});
+    const resultAccount = await responseAccount.json();
+    if (resultAccount.status === 'error') {
+        throw new Error(resultAccount.message)
+    }
+
+    const accountData:IAccount = {
+        ...resultLogin,
+        ...resultAccount
+    };
+
+    return accountData;
+}
+
+
+async function requestPostLogin({username, password}) {
+    const response = await fetch(process.env.REACT_APP_API_URL + '/accounts/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username, password})
+    });
+    return response;
+}
+
+
+async function requestGetAccount({username, idToken}) {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/accounts/${username}`, {
+        headers: {
+            ...getAuthHeader({idToken}),
+        }
+    });
+    return response;
+}
+
+
+export function getAuthHeader({idToken}) {
+    return {'Authorization': `Bearer ${idToken}`};
+}
+
+
+// TODO: add check for isExpired? maybe other stuff?
+export function isAuth(account:IAccount) {
+    return Boolean(account.isAuthenticated);
+}
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// DEPRECATED beyond this point /o\ beware!
+////////////////////////////////////////////////////////////////////////////////
+
+
 /**
  * Account Service uses Session Storage
  * 
@@ -19,7 +90,8 @@ class Account {
             id: window.sessionStorage.getItem('id') || '',
             username: window.sessionStorage.getItem('username') || '',
             idToken: window.sessionStorage.getItem('idToken') || '',
-            expiresIn: window.sessionStorage.getItem('expiresIn') || ''
+            expiresIn: window.sessionStorage.getItem('expiresIn') || '',
+            isAuthenticated: window.sessionStorage.getItem('idToken') ? true : false
         };
     }
 

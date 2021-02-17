@@ -2,11 +2,12 @@ import {combineReducers, createStore, applyMiddleware} from 'redux';
 import thunkMiddleware from 'redux-thunk';
 //import { createLogger } from 'redux-logger';
 
-import {testReducer, chatsReducer} from './chatsReducer';
+import {accountReducer} from './accountReducer';
+import {chatsReducer} from './chatsReducer';
 
 
 const rootReducer = combineReducers({
-    test: testReducer,
+    account: accountReducer,
     chats: chatsReducer,
 });
 

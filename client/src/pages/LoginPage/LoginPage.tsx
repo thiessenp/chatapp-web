@@ -1,12 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory /*,useLocation*/} from 'react-router-dom';
-//import {authenticate, requestPostlogin, requestGetAccount, updateAccount} from '../../store/accountService';
-import {account} from '../../services/accountService';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {isAuth} from '../../services/accountService';
 import {requestGetHealth} from '../../services/healthService';
+import {getLoginAction} from '../../store/accountActions'
+
 
 // NOTE: Hooks must be used in react components
-
 function LoginPage(/*props*/) {
+    const dispatch = useDispatch();
+    const accountData = useSelector(state => state.account);
+
     const [health, setHealth] = useState({status: 'UNKNOWN'});
     let history = useHistory();
 
@@ -27,26 +32,11 @@ function LoginPage(/*props*/) {
             return;
         }
 
-        const authResult = await account.login({
-            username: username.value.trim(), 
-            password: password.value.trim()
-        });
-
-        if (authResult.success) {
-            console.log('forwarding to /chats...')
-
-            // TODO: 
-            // -- then remove above when other stuff works
-            // let { from } = location.state || { from: { pathname: "/" } };
-
-            // TEMP:
-            // -- This works but is not generic
-            let {from} = {from: {pathname: '/chats'}};
-
-            history.replace(from);
-        } else {
-            alert('Temp: ' + authResult.message);
-        }
+        // Do the Login - on success the below should forward the user to the Chats
+        dispatch(getLoginAction({
+            username: username.value, 
+            password: password.value
+        }));
     }
 
     useEffect(() => {
@@ -55,6 +45,20 @@ function LoginPage(/*props*/) {
         })();
 
     }, []);
+
+    useEffect(() => {
+        if (!isAuth(accountData)) { return; }
+
+        // TODO: 
+        // -- then remove above when other stuff works
+        // let { from } = location.state || { from: { pathname: "/" } };
+
+        // TEMP:
+        // -- This works but is not generic
+        console.log('forwarding to /chats...');
+        let {from} = {from: {pathname: '/chats'}};
+        history.replace(from);
+    }, [accountData]);
 
     return (
         <section>

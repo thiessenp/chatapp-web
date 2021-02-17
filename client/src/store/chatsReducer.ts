@@ -1,5 +1,5 @@
+// TODO: BUG: add a new chat (postman), it adds fine but state seems messed up on Chat page
 // TODO: side effects from functions, instead return var (avoid side effects)
-
 import {
     GET_CHATS_REQUEST,
     GET_CHATS_SUCCESS,
@@ -8,28 +8,6 @@ import {
     GET_CHAT_SUCCESS,
     GET_CHAT_FAILURE
 } from './chatsActions';
-
-
-// >>>>>>>>TESTS
-import {TEST} from './chatsActions';
-export interface ITest {
-    data: string
-}
-const INITIAL_TEST_STATE: ITest = {
-    data: 'test start'
-}
-export function testReducer(state=INITIAL_TEST_STATE, action) {
-    switch(action.type) {
-        case TEST:
-            return {
-                ...state,
-                data: 'test from case TEST+' + action.payload.data
-            }
-        default:
-            return state;
-    }
-}
-// >>>>>>>>END TESTS
 
 
 export interface IChat {
@@ -75,16 +53,6 @@ export function chatsReducer(state=INITIAL_STATE, action) {
     }
 }
 
-
-/**
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-START:
-
-bug, add a new chat (postman), it adds fine but state seems messed up on Chat page
-
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
- */
 
 /**
  * Updates chats by over writing all chats if there is a different number of

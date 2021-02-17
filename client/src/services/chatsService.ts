@@ -1,7 +1,7 @@
 // TODO
 // consider, should a service return data or more likely the promise called?
 
-import {account} from './accountService';
+import {getAuthHeader} from './accountService';
 
 export interface Chat {
     id: string,
@@ -9,11 +9,11 @@ export interface Chat {
 }
 
 
-export async function requestGetChats({isAllData=false}) {
+export async function requestGetChats({account, isAllData=false}) {
     const url = process.env.REACT_APP_API_URL + '/chats' + (isAllData ? '?isAllData=true' : '');
     const response = await fetch(url, {
         headers: {
-            ...account.getAuthHeader(),
+            ...getAuthHeader({idToken: account.idToken}),
         }
     });
 
@@ -29,10 +29,10 @@ export async function requestGetChats({isAllData=false}) {
 }
 
 
-export async function requestGetChat({chatId}) {
+export async function requestGetChat({account, chatId}) {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/chats/${chatId}`, {
         headers: {
-            ...account.getAuthHeader(),
+            ...getAuthHeader({idToken: account.idToken}),
         }
     });
 
@@ -45,11 +45,11 @@ export async function requestGetChat({chatId}) {
     }
 }
 
-export async function requestAddUserTochat({chatId, accountId}) {
+export async function requestAddUserTochat({account, chatId, accountId}) {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/chats/${chatId}/users`, {
         method: 'POST',
         headers: {
-            ...account.getAuthHeader(),
+            ...getAuthHeader({idToken: account.idToken}),
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({chatId, accountId})
@@ -70,11 +70,11 @@ export async function requestAddUserTochat({chatId, accountId}) {
     }
 }
 
-export async function requestPostMessage({chatId, fromChatUserId, toChatUserId, content}) {
+export async function requestPostMessage({account, chatId, fromChatUserId, toChatUserId, content}) {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/chats/${chatId}/messages`, {
         method: 'POST',
         headers: {
-            ...account.getAuthHeader(),
+            ...getAuthHeader({idToken: account.idToken}),
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({chatId, fromChatUserId, toChatUserId, content})

@@ -14,27 +14,25 @@ import {Composer} from './Composer';
 // NOTE: receives chats but can ALSO use a reducer
 export function Chat(props) {
     let {chatId} = useParams();
-
-    // User info so can send a message - I think?
-    let [chatUser, setChatUser] = useState<any>({});
-
     const dispatch = useDispatch();
-
+    const account = useSelector(state => state.account);
     const chat = useSelector(state => {
         const chat = state.chats.filter(chat => chat.id === chatId);
         if (!chat || !chat[0]) { return state; }
         return chat[0];
     });
 
+    // User info so can send a message - I think?
+    let [chatUser, setChatUser] = useState<any>({});
+
 
     // CAREFUL: infinite loops below if change - TODO readmore about hook lifecycle
     useEffect(() => {
-        (async () => {
+        // (async () => {
             // if (!chatUser.id) {
-                addUser();
+                addUserToChat();
             // }
-
-        })();
+        // })();
     }, [chatId]);
 
     useEffect(() => {
@@ -43,9 +41,10 @@ export function Chat(props) {
         return () => { poll.stop(); }
     }, [chatId])
 
-    async function addUser() {
+    async function addUserToChat() {
         try {
             const chatUserData = await requestAddUserTochat({
+                account,
                 chatId, 
                 accountId: props.account.id
             });
@@ -63,7 +62,10 @@ export function Chat(props) {
             toChatUserId: chatUser.id,
             content
         };
-        const response = await requestPostMessage(message);
+        requestPostMessage({
+            account,
+            ...message
+        });
     }
 
     return (

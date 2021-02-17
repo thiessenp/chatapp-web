@@ -1,16 +1,17 @@
 import {Route, Redirect} from 'react-router-dom';
-// import {isAuthenticated} from '../store/accountService';
-import {account} from '../services/accountService';
+import {useSelector} from 'react-redux';
+
+import {isAuth} from '../services/accountService';
+
 
 function RouteGuard({component: Component, /*auth,*/ ...rest}) {
-    // TODO wonder if there will be caching issues here?
-    const auth = account.isAuthenticated();
+    const account = useSelector(state => state.account);
 
     return(
         <Route 
             {...rest} 
             render={(props) => (
-                auth === true ? <Component {...props} /> : <Redirect to='/login' />
+                isAuth(account) ? <Component {...props} /> : <Redirect to='/login' />
             )}
         />
     );
@@ -20,7 +21,12 @@ export default RouteGuard;
 
 
 
-// DEPRECATED
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// DEPRECATED below
+////////////////////////////////////////////////////////////////////////////////
 
 // import React, { useContext, createContext, useState } from "react";
 // import {

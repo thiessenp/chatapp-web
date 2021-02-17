@@ -1,4 +1,3 @@
-import {useEffect} from 'react';
 import {BrowserRouter, Route, Switch, Link} from 'react-router-dom';
 
 import RouteGuard from './components/AuthGuard';
@@ -8,21 +7,9 @@ import ChatsPage from './pages/ChatsPage/ChatsPage';
 import './App.scss';
 
 
-import { useDispatch, useSelector } from 'react-redux';
-
-
 function App() {
   // Replaced <BrowserRouter history={history}> with <Router history={history}> because Router supports history
   // BUUUUUUT no longer routes... :)
-
-
-  const testData = useSelector(state => state.test);
-  const dispatch = useDispatch();
-  // test it once
-  useEffect(() => { 
-    dispatch({type: 'TEST', payload: {data: 'App dispatch'} }); 
-  }, []);
-
 
   return (
     <BrowserRouter>
@@ -47,7 +34,6 @@ function App() {
             <header className="App-header">
               <h1>ChatApp (WIP)</h1>
               <Link to={`/chats`}>Go to the Chats id</Link>
-              <h2>test: {testData.data}</h2>
             </header>
           </div>
         </Route>
