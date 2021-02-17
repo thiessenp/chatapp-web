@@ -1,9 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {requestPostMessage, requestAddUserTochat, Poll} from '../services/chatsService';
-import {getChatAction} from '../store/chatsActions';
+import {requestPostMessage, Poll} from '../services/chatsService';
+import {getChatAction, addUserTochat} from '../store/chatsActions';
 import {Transcript} from './Transcript';
 import {Roster} from './Roster';
 import {Composer} from './Composer';
@@ -22,44 +22,24 @@ export function Chat(props) {
         return chat[0];
     });
 
-    // User info so can send a message - I think?
-    let [chatUser, setChatUser] = useState<any>({});
-
-
-    // CAREFUL: infinite loops below if change - TODO readmore about hook lifecycle
-    useEffect(() => {
-        // (async () => {
-            // if (!chatUser.id) {
-                addUserToChat();
-            // }
-        // })();
-    }, [chatId]);
 
     useEffect(() => {
+        // Join The Chat (if haven't already)
+        if (!chat.chatUserId) {
+            dispatch(addUserTochat({chatId, accountId:account.id}));
+        }
+
+        // Get The Chat (polling)
         const callback:any = () => { return dispatch(getChatAction({chatId})); }
         const poll = new Poll({callback});
         return () => { poll.stop(); }
     }, [chatId])
 
-    async function addUserToChat() {
-        try {
-            const chatUserData = await requestAddUserTochat({
-                account,
-                chatId, 
-                accountId: props.account.id
-            });
-            setChatUser({id: chatUserData.id});
-        } catch(e) {
-             // TODO: error handling service?
-            console.log('--ERROR', e.message);
-        }
-    }
-
     async function sendMessage({content}) {
         const message = {
             chatId: chat.id,
-            fromChatUserId: chatUser.id,
-            toChatUserId: chatUser.id,
+            fromChatUserId: chat.chatUserId,    //chatUser.id,
+            toChatUserId: chat.chatUserId,      //chatUser.id,
             content
         };
         requestPostMessage({
