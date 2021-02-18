@@ -8,6 +8,8 @@ import {Poll} from '../../services/chatsService';
 import {ChatsList} from '../../components/ChatsList';
 import {Chat} from '../../components/Chat';
 
+import './ChatsPage.scss';
+
 
 function ChatsPage() {
     const dispatch = useDispatch();
