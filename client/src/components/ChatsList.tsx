@@ -4,7 +4,7 @@ export function ChatsList(props) {
     let {url} = useRouteMatch();
 
     return (
-        <section>
+        <section className="chatListComponent">
             <h2>ChatsList</h2>
             <ol>
                 {props.chats && props.chats.map(chat => {

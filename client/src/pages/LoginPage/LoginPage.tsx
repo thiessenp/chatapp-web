@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useHistory /*,useLocation*/} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -14,9 +14,7 @@ function LoginPage(/*props*/) {
     const health = useSelector(state => state.health);
     const accountData = useSelector(state => state.account);
 
-    // const [health, setHealth] = useState({status: 'UNKNOWN'});
     let history = useHistory();
-
     // TODO:
     //let location = useLocation();
 
@@ -73,7 +71,6 @@ function LoginPage(/*props*/) {
                 </div>
                 <button type="submit">LogIn to Chat</button>
             </form>
-
             <p>Connection to API: {process.env.REACT_APP_API_URL} is {health.status}</p>
         </section>
     )

@@ -1,1 +1,28 @@
-//TODO
+
+/* Just LAYOUT for pages? rest in component */
+
+.chatsContainer {
+    display: flex;
+    flex-direction: row;
+  
+    // .chatListComponent {}
+  
+    .chatComponent {
+      .chatContainer {
+        display: flex;
+  
+        .rosterComponent {
+          display: flex;
+          flex-direction: column;
+        }
+    
+        .transcriptContainer {
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+  
+          // .composerComponent {}
+        }
+      }
+    }
+  }

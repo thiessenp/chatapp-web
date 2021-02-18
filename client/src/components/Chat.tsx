@@ -52,17 +52,19 @@ export function Chat(props) {
     }
 
     return (
-        <section>
+        <section className="chatComponent">
             <h3>Chat: {chat && chat.name}</h3>
-
-           { chat && chat.transcript && chat.roster &&
-                <>
-                    <Roster roster={chat.roster} />
-                    <Transcript transcript={chat.transcript} />
-                </>
-            }
-
-            <Composer sendMessage={sendMessage} />
+            <div className="chatContainer">
+                { chat && chat.transcript && chat.roster &&
+                    <>
+                        <Roster roster={chat.roster} />
+                        <div className="transcriptContainer">
+                            <Transcript transcript={chat.transcript} />
+                            <Composer sendMessage={sendMessage} />
+                        </div>
+                    </>
+                }
+            </div>
         </section>
     )
 }

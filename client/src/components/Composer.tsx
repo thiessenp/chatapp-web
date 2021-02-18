@@ -21,7 +21,7 @@ export function Composer(props) {
     function handleInputKeys(e) {}
 
     return (
-        <section ref={composerRef}>
+        <section ref={composerRef} className="composerComponent">
             <h3>Compose a Message</h3>
             <form onSubmit={createMessage}>
                 <input type="hidden" value={props.username} />

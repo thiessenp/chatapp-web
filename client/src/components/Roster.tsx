@@ -1,7 +1,7 @@
 export function Roster(props) {
 
     return (
-        <section>
+        <section className="rosterComponent">
             <h3>Roster</h3>
 
             {props.roster.length === 0 && 

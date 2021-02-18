@@ -32,7 +32,7 @@ export function Transcript(props) {
     }, [props.transcript, initialized]);
 
     return (
-        <section>
+        <section className="transcriptComponent">
             <h3>Transcript</h3>
             {props.transcript.length === 0 && 
                 <div>No messages yet. Why not send one?</div>

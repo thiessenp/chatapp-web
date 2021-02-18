@@ -1,9 +1,8 @@
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useRouteMatch, Route, Switch, Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getChatsAction} from '../../store/chatsActions';
-// import {requestGetHealth} from '../../services/healthService';
 import {getHealthAction} from '../../store/healthActions';
 import {Poll} from '../../services/chatsService';
 import {ChatsList} from '../../components/ChatsList';
@@ -17,15 +16,6 @@ function ChatsPage() {
     const chats = useSelector(state => state.chats);
     const account = useSelector(state => state.account);
 
-/*
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-HERE:
-Add health API to Redux
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-*/
-    // const [health, setHealth] = useState({status: 'UNKNOWN'});
- 
-
     // Server health up/down status
     useEffect(() => {
         dispatch(getHealthAction());
@@ -33,14 +23,6 @@ Add health API to Redux
 
     // Bootstrap with Account Data, then get initial Chats data
     useEffect(() => {
-        // const accountData = account.getAccount();
-        // setUserData(accountData);
-
-        // (async () => {
-        //     const healthData = await requestGetHealth()
-        //     setHealth(healthData);
-        // })();
-
         let poll;
         (async () => {
             // Get initial all Chat data
@@ -56,19 +38,20 @@ Add health API to Redux
     }, []);
 
     return (
-        <section>
+        <section className="chatsPage">
             <h2>ChatsPage TODO (<Link to={`/home`}>home</Link>)</h2>
             <div>Connection to API: {process.env.REACT_APP_API_URL} is {health.status} with account {account.username}</div>
 
-            <ChatsList chats={chats} />
-            
-            <Switch>
-                <Route path={`${path}/:chatId`}>
-                    {account.id && 
-                        <Chat account={account} chats={chats} />
-                    }
-                </Route>
-            </Switch>
+            <div className="chatsContainer">
+                <ChatsList chats={chats} />
+                <Switch>
+                    <Route path={`${path}/:chatId`}>
+                        {account.id && 
+                            <Chat account={account} chats={chats} />
+                        }
+                    </Route>
+                </Switch>
+            </div>
         </section>
     )
 }
