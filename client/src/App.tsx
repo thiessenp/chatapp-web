@@ -1,6 +1,7 @@
-import {BrowserRouter, Route, Switch, Link} from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
 import RouteGuard from './components/AuthGuard';
+import HomePage from './pages/HomePage/HomePage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import ChatsPage from './pages/ChatsPage/ChatsPage';
 
@@ -12,35 +13,37 @@ function App() {
   // BUUUUUUT no longer routes... :)
 
   return (
-    <BrowserRouter>
-      <Switch>
+    // <section className="App">
+      <BrowserRouter>
+        <Switch>
+          {/* TODO: advantage/disadvantages to either:
+              <Route path="/path" component={Component} />
+              -VS-
+              <Route path="/path"><Component></Route>
+          */}
 
-        {/* TODO: advantage/disadvantages to either:
-            <Route path="/path" component={Component} />
-            -VS-
-            <Route path="/path"><Component></Route>
-        */}
+          <Route path="/login" component={LoginPage} />
 
-        <Route path="/login" component={LoginPage} />
+          <RouteGuard path="/chats" component={ChatsPage} />
+          {/*-vs- <RouteGuard path="/chats">
+              <ChatsPage></ChatsPage>
+          </RouteGuard> */}
 
-        <RouteGuard path="/chats" component={ChatsPage}  />
-        {/*-vs- <RouteGuard path="/chats">
-            <ChatsPage></ChatsPage>
-        </RouteGuard> */}
+          {/* TODO: what does adding `exact` do again? */}
+          <Route path="/" component={HomePage} />
+          {/* <Route path="/">
+            <div className="App">
+              <header className="App-header">
+                <h1>ChatApp (WIP)</h1>
+                <Link to={`/chats`}>Go to the Chats id</Link>
+              </header>
+            </div>
+          </Route> */}
 
-        {/* TODO: what does adding `exact` do again? */}
-        <Route path="/">
-          <div className="App">
-            <header className="App-header">
-              <h1>ChatApp (WIP)</h1>
-              <Link to={`/chats`}>Go to the Chats id</Link>
-            </header>
-          </div>
-        </Route>
-
-        {/* Remember order matters, so less restrictive at bottom */}
-      </Switch>
-    </BrowserRouter>
+          {/* NOTE: Remember order matters, so less restrictive at bottom */}
+        </Switch>
+      </BrowserRouter>
+    // </section>
   );
 }
 

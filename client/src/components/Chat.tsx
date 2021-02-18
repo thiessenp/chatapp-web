@@ -16,13 +16,14 @@ export function Chat(props) {
     let {chatId} = useParams();
     const dispatch = useDispatch();
     const account = useSelector(state => state.account);
+    // TODO: could also try - useSelector(state => state.chats.find(chat=> chat.id === chatId));
     const chat = useSelector(state => {
         const chat = state.chats.filter(chat => chat.id === chatId);
         if (!chat || !chat[0]) { return state; }
         return chat[0];
     });
 
-
+    // Update Chat details on new Chat (when navigate to another chat)
     useEffect(() => {
         // Join The Chat (if haven't already)
         if (!chat.chatUserId) {
@@ -32,6 +33,8 @@ export function Chat(props) {
         // Get The Chat (polling)
         const callback:any = () => { return dispatch(getChatAction({chatId})); }
         const poll = new Poll({callback});
+
+        // Stop polling on leaving the chat
         return () => { poll.stop(); }
     }, [chatId])
 

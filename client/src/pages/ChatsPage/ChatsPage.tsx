@@ -3,7 +3,8 @@ import {useRouteMatch, Route, Switch, Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getChatsAction} from '../../store/chatsActions';
-import {requestGetHealth} from '../../services/healthService';
+// import {requestGetHealth} from '../../services/healthService';
+import {getHealthAction} from '../../store/healthActions';
 import {Poll} from '../../services/chatsService';
 import {ChatsList} from '../../components/ChatsList';
 import {Chat} from '../../components/Chat';
@@ -12,21 +13,33 @@ import {Chat} from '../../components/Chat';
 function ChatsPage() {
     const dispatch = useDispatch();
     let {path} = useRouteMatch();
+    const health = useSelector(state => state.health);
     const chats = useSelector(state => state.chats);
     const account = useSelector(state => state.account);
 
-    const [health, setHealth] = useState({status: 'UNKNOWN'});
+/*
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+HERE:
+Add health API to Redux
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+*/
+    // const [health, setHealth] = useState({status: 'UNKNOWN'});
  
+
+    // Server health up/down status
+    useEffect(() => {
+        dispatch(getHealthAction());
+    }, []);
 
     // Bootstrap with Account Data, then get initial Chats data
     useEffect(() => {
         // const accountData = account.getAccount();
         // setUserData(accountData);
 
-        (async () => {
-            const healthData = await requestGetHealth()
-            setHealth(healthData);
-        })();
+        // (async () => {
+        //     const healthData = await requestGetHealth()
+        //     setHealth(healthData);
+        // })();
 
         let poll;
         (async () => {
