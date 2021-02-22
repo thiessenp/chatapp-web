@@ -19,6 +19,10 @@ ReactDOM.render(
     <Provider store={store}>
       {/* <App /> */}
 
+      <header>
+        TODO Header, logout...
+      </header>
+
       <BrowserRouter>
         <Switch>
           {/* TODO: advantage/disadvantages to either:
