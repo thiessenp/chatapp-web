@@ -23,9 +23,9 @@ export function Composer(props) {
     return (
         <section ref={composerRef} className="composerComponent">
             <h3>Compose a Message</h3>
-            <form onSubmit={createMessage}>
+            <form onSubmit={createMessage} autoComplete="off">
                 <input type="hidden" value={props.username} />
-                <input ref={messageRef} onKeyDown={handleInputKeys} name="message" placeholder="Type a message" spellCheck="false" required />
+                <input ref={messageRef} onKeyDown={handleInputKeys} name="message" placeholder="Type a message" spellCheck="false" autoComplete="off" required />
                 <button type="submit">Send</button>
             </form>
         </section>

@@ -4,6 +4,8 @@ import {
     GET_HEALTH_FAILURE
 } from './healthActions';
 
+import {HEALTH} from './healthActions';
+
 
 export interface IHealth {
     status: string
@@ -11,7 +13,7 @@ export interface IHealth {
 
 // TODO: add ENUM for health states
 const INITIAL_STATE:IHealth = {
-    status: 'UNKNOWN'
+    status: HEALTH.UNKNOWN
 };
 
 export function healthReducer(state=INITIAL_STATE, action) {

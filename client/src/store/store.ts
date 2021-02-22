@@ -1,6 +1,6 @@
 import {combineReducers, createStore, applyMiddleware} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-//import { createLogger } from 'redux-logger';
+import {composeWithDevTools} from 'redux-devtools-extension';
 
 import {healthReducer} from './healthReducer';
 import {accountReducer} from './accountReducer';
@@ -13,13 +13,23 @@ const rootReducer = combineReducers({
     chats: chatsReducer,
 });
 
-// TODO - want a logger - so verbose!
+// not needed since devtools?
+// import { createLogger } from 'redux-logger';
 // const loggerMiddleware = createLogger();
 
 export const store = createStore(
     rootReducer,
-    applyMiddleware(
-        thunkMiddleware // for fetch stuff?
-        // ,loggerMiddleware
-    )
+
+    /* preloadedState, */
+
+    // Access debug console (load in new tab if not show first try)
+    // Download also from chrome: "Redux DevTools for Chrome"
+    composeWithDevTools(
+        applyMiddleware(
+            // for fetching stuff async
+            thunkMiddleware,
+            // not needed since devtools?
+            // ,loggerMiddleware 
+        )
+    ),
 );

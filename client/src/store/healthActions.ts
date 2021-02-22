@@ -1,5 +1,11 @@
 import {requestGetHealth} from '../services/healthService';
 
+export enum HEALTH {
+    UNKNOWN = 'UNKNOWN',
+    DOWN = 'DOWN',
+    UP = 'UP'
+}
+
 
 // Note: could group into an object also
 export const GET_HEALTH_REQUEST = 'GET_HEALTH_REQUEST';
@@ -19,8 +25,25 @@ export function getHealthAction() {
     };
 
     function request() { return {type: GET_HEALTH_REQUEST, payload: {}} }
-    function success(accountResult) { return {type: GET_HEALTH_SUCCESS, payload: accountResult} }
-    function failure(error) { return {type: GET_HEALTH_FAILURE, payload: error} }
+    function success(healthData) { 
+        return {
+            type: GET_HEALTH_SUCCESS, 
+            payload: {
+                ...healthData,
+                // Override any status with Client relevant status (but keep extra data)
+                status: HEALTH.UP
+            } 
+        }
+    }
+    function failure(error) { 
+        return {
+            type: GET_HEALTH_FAILURE, 
+            payload: {
+                ...error,
+                status: HEALTH.DOWN
+            }
+        } 
+    }
 }
 
 // TODO: logoutAction() - redirect login
