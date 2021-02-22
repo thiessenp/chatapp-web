@@ -52,7 +52,7 @@ export function Chat(props) {
     }
 
     return (
-        <section className="chatComponent">
+        <section className="chatComponent active">
             <h3>Chat: {chat && chat.name}</h3>
             <div className="chatContainer">
                 { chat && chat.transcript && chat.roster &&

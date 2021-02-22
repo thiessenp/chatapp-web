@@ -5,11 +5,13 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import {healthReducer} from './healthReducer';
 import {accountReducer} from './accountReducer';
 import {chatsReducer} from './chatsReducer';
+import {chatDataReducer} from './chatDataReducer';
 
 
 const rootReducer = combineReducers({
     health: healthReducer,
     account: accountReducer,
+    chatData: chatDataReducer,
     chats: chatsReducer,
 });
 

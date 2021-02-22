@@ -1,3 +1,5 @@
+@import "../../style/variables";
+
 
 /* Just LAYOUT for pages? rest in component */
 
@@ -5,12 +7,16 @@
     display: flex;
     flex-direction: row;
   
-    // .chatListComponent {}
+    .chatListComponent {
+      ol>li.active { background-color: $activeChat; }
+    }
   
     .chatComponent {
+      &.active { border: 2px solid $activeChat; }
+
       .chatContainer {
         display: flex;
-  
+
         .rosterComponent {
           display: flex;
           flex-direction: column;
@@ -25,4 +31,6 @@
         }
       }
     }
+
+
   }

@@ -1,17 +1,17 @@
-import {Link, useRouteMatch} from 'react-router-dom';
+import {ChatsListItem} from './ChatsListItem';
+
 
 export function ChatsList(props) {
-    let {url} = useRouteMatch();
-
     return (
         <section className="chatListComponent">
             <h2>ChatsList</h2>
             <ol>
-                {props.chats && props.chats.map(chat => {
-                    return (
-                        <li key={chat.id}><Link to={`${url}/${chat.id}`}>id: {chat.id}, {chat.name}</Link></li>
-                    )
-                })}
+                {props.chats && props.chats.map(chat => (
+                    <ChatsListItem 
+                        key={chat.id} 
+                        id={chat.id} 
+                        name={chat.name} />
+                ))}
             </ol>
         </section>
     )
