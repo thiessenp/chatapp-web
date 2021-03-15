@@ -7,7 +7,7 @@
 Tech Stack:
 - DB: PosgreSQL
 - Server: NodeJS ExpressJS
-- Client: React Redux
+- Client: React Redux Bootstrap
 
 ## Setup
 

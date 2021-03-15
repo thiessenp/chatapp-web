@@ -20,7 +20,14 @@ ReactDOM.render(
       {/* <App /> */}
 
       <header>
-        TODO Header, logout...
+        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+          <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="/">ChatsApp</a>
+          <ul className="navbar-nav px-3">
+            <li className="nav-item text-nowrap">
+              <a className="nav-link" href="/">Sign out (todo)</a>
+            </li>
+          </ul>
+        </nav>
       </header>
 
       <BrowserRouter>
@@ -31,25 +38,30 @@ ReactDOM.render(
               <Route path="/path"><Component></Route>
           */}
 
-          <Route path="/login" component={LoginPage} />
+          <div className="container-fluid">
+            <div className="row">
 
-          <RouteGuard path="/chats" component={ChatsPage} />
-          {/*-vs- <RouteGuard path="/chats">
-              <ChatsPage></ChatsPage>
-          </RouteGuard> */}
+            {/* NOTE: Remember order matters, so less restrictive at bottom */}
+            
+            <Route path="/login" component={LoginPage} />
 
-          {/* TODO: what does adding `exact` do again? */}
-          <Route path="/" component={HomePage} />
-          {/* <Route path="/">
-            <div className="App">
-              <header className="App-header">
-                <h1>ChatApp (WIP)</h1>
-                <Link to={`/chats`}>Go to the Chats id</Link>
-              </header>
+            <RouteGuard path="/chats" component={ChatsPage} />
+            {/*-vs- <RouteGuard path="/chats">
+                <ChatsPage></ChatsPage>
+            </RouteGuard> */}
+
+            {/* TODO: what does adding `exact` do again? */}
+            <Route path="/" component={HomePage} />
+            {/* <Route path="/">
+              <div className="App">
+                <header className="App-header">
+                  <h1>ChatApp (WIP)</h1>
+                  <Link to={`/chats`}>Go to the Chats id</Link>
+                </header>
+              </div>
+            </Route> */}
             </div>
-          </Route> */}
-
-          {/* NOTE: Remember order matters, so less restrictive at bottom */}
+          </div>
         </Switch>
       </BrowserRouter>
 
